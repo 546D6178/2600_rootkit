@@ -8,6 +8,7 @@ This is a rootkit we have to make as a school project. Nothing more
 - kpartx
 - GNU utils (such as make)
 - parted
+- QEMU
 - Root permissions
 - A functional brain
 
@@ -29,5 +30,10 @@ This is a rootkit we have to make as a school project. Nothing more
 
 ### "make_modules.sh"
 This one is straightforward, it compiles every module in the modules folder
+
+### QEMU
+Once your image is ready, you can use QEMU to make a virtual machine:
+`sudo qemu-system-x86_64 -hda <image_file> -nographic`
+(you need superuser permissions because the image file is readable by root only although you can chown it)
 
 
