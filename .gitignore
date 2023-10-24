@@ -1,0 +1,14 @@
+linux
+output
+rootfs
+*.pdf
+initramfs
+busybox
+*.order
+*.mod.c
+*.mod
+*.mod.o
+*.ko
+*.symvers
+*.cmd
+*.img

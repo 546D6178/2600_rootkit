@@ -1,0 +1,33 @@
+# 2600 Rootkit Group 14
+
+## Introduction
+This is a rootkit we have to make as a school project. Nothing more
+
+## Prerequisites
+- Docker
+- kpartx
+- GNU utils (such as make)
+- parted
+- Root permissions
+- A functional brain
+
+## Steps
+1. Clone this repository 
+`$ git clone github.com/Salim-Dardouchi/2600_rootkit`
+2. Change directory 
+`$ cd 2600_rootkit`
+3. Copy Linux sources (Preferably the last Linux 5 LTS)
+`$ cp -r <linux_sources_location> ./linux`
+4. You're ready to work
+
+## Usage
+### "create_diskfs.sh"
+- 1st arg: size (ex: `1024M`)
+- 2nd arg: img path (ex: `./2600.img`)
+- 3rd arg: tempfolder path (ex: `/tmp/rootfs`)
+- 4th arg: module path to copy in diskfs (ex: `./modules/rootkit`)
+
+### "make_modules.sh"
+This one is straightforward, it compiles every module in the modules folder
+
+
