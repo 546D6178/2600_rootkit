@@ -6,7 +6,7 @@ This is a rootkit we have to make as a school project. Nothing more
 ## Prerequisites
 - Docker
 - kpartx
-- GNU utils (such as make)
+- GNU utils (such as gcc, make, etc)
 - parted
 - QEMU
 - GRUB
@@ -20,7 +20,9 @@ This is a rootkit we have to make as a school project. Nothing more
 `$ cd 2600_rootkit`
 3. Copy Linux sources (Preferably the last Linux 5 LTS)
 `$ cp -r <linux_sources_location> ./linux`
-4. You're ready to work
+4. Move into the Linux directory, configure and compile the kernel
+`$ cd ./linux && make defconfig && make -j <threads>`
+5. You're ready to work
 
 ## Usage
 ### "create_diskfs.sh"
