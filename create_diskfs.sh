@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ## REQUIRES ROOT PERMISSIONS
 if [ $(id -u) -ne 0 ]; then

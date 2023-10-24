@@ -9,6 +9,7 @@ This is a rootkit we have to make as a school project. Nothing more
 - GNU utils (such as make)
 - parted
 - QEMU
+- GRUB
 - Root permissions
 - A functional brain
 
