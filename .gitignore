@@ -4,6 +4,7 @@ rootfs
 *.pdf
 initramfs
 busybox
+*.o
 *.order
 *.mod.c
 *.mod

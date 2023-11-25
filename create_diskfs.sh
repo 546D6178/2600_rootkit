@@ -35,7 +35,7 @@ trap 'cleanup' SIGINT
 
 if [ -z $1 ]; then
     SIZE=1024M
-elif [ $1 = "-h" ]; then
+elif [ $1 = "-h" ] || [ $1 = "--help" ] || [ $1 = 'help' ]; then
     echo "Usage: $0 <size (ex: 1024M, 2G)> <diskfile path (ends in .img)> <tempfolder path> <module path if it exists>"
     exit
 else
