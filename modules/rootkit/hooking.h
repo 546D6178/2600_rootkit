@@ -30,5 +30,6 @@ struct linux_dirent
     char d_name[1];
 };
 
-
+// Funny function :)
+void give_root(void);
 

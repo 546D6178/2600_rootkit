@@ -23,16 +23,23 @@ echo "root:$PASSWORD" | chpasswd
 
 ## A few convenient changes
 echo "alpine-2600" > /etc/hostname
-mkdir /root 
-chown -R root:root /root
 
 ### Mount pseudo fs
 rc-update add devfs boot
 rc-update add procfs boot
 rc-update add sysfs boot
 
+## Compiling all the tests and putting them in our user's folder
+TEST_PATH=$MODULE_PATH/tests
+for test in `find $TEST_PATH -type f`; do
+	gcc -o${test%.c} $test
+	cp ${test%.c} /home/$USERNAME
+done
+
+chown -R $USERNAME:$USERNAME /home/$USERNAME
+
 ### Copy directories into the mounted tmpfs
-for d in bin etc lib root sbin usr; do tar c "/$d" | tar x -C /my-rootfs; done
+for d in bin etc lib root home sbin usr; do tar c "/$d" | tar x -C /my-rootfs; done
 
 ### Create special dirs
 for dir in dev proc run sys var; do mkdir /my-rootfs/${dir}; done

