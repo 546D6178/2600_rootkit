@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# The password will also be used by the root user
+USERNAME="renji"
+PASSWORD="2600"
+
 # Install minimal utilities, a C compiler and libc
 apk add openrc neovim util-linux build-base nasm bash shadow
 
@@ -10,8 +14,12 @@ echo ttyS0 > /etc/securetty
 rc-update add agetty.ttyS0 default
 rc-update add root default
 
+## Creating our standard user
+useradd -m $USERNAME
+echo "$USERNAME:$PASSWORD" | chpasswd
+
 ## YES, THE PASSWORD IS IN CLEAR TEXT BUT WE DON'T CARE
-echo "root:2600" | chpasswd
+echo "root:$PASSWORD" | chpasswd
 
 ## A few convenient changes
 echo "alpine-2600" > /etc/hostname

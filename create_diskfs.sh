@@ -122,5 +122,8 @@ LOOPDEVICE=$(losetup -l | head -n 2 | tail -n 1 | cut -d' ' -f 1)
 echo "[create_diskfs] Installing GRUB on $LOOPDEVICE"
 sudo grub-install --directory=/usr/lib/grub/i386-pc --boot-directory=$TEMPFOLDER/boot $LOOPDEVICE
 
+## Chowning the image to the main user
+chown 1000:1000 $DISKFILE
+
 ## Cleanup
 cleanup

