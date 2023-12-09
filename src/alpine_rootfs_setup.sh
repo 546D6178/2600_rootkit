@@ -5,7 +5,7 @@ USERNAME="renji"
 PASSWORD="2600"
 
 # Install minimal utilities, a C compiler and libc
-apk add openrc neovim util-linux build-base nasm bash shadow
+apk add openrc neovim util-linux build-base nasm bash shadow openssh
 
 # Setup serial terminal access for QEMU
 ln -s agetty /etc/init.d/agetty.ttyS0
@@ -37,6 +37,16 @@ for test in `find $TEST_PATH -type f`; do
 done
 
 chown -R $USERNAME:$USERNAME /home/$USERNAME
+
+### add network 
+echo -e "auto eth0\niface eth0 inet dhcp" | tee /etc/network/interfaces
+rc-update add networking boot
+
+
+### add openssh 
+sed -i -e 's/#Port 22/Port 2222/' -e 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+rc-update add sshd boot
+
 
 ### Copy directories into the mounted tmpfs
 for d in bin etc lib root home sbin usr; do tar c "/$d" | tar x -C /my-rootfs; done
