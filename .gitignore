@@ -4,6 +4,9 @@ rootfs
 *.pdf
 initramfs
 busybox
+superkill
+companion
+*.a
 *.o
 *.order
 *.mod.c
