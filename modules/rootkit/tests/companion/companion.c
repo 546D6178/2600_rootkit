@@ -35,33 +35,140 @@ void check_ip_address_format(char* address){
     }
 }
 
-
-char* getLocalIpAddress(){
+char* getLocalIpAddress() {
     char hostbuffer[256];
-    char* IPbuffer = calloc(256, sizeof(char));
-    struct hostent *host_entry;
-    int hostname;
-  
-    hostname = gethostname(hostbuffer, sizeof(hostbuffer));
-    if(hostname==-1){
-        perror("["KRED"ERROR"RESET"]""Error getting local IP: gethostname");
+    struct addrinfo hints, *res, *p;
+    int status;
+
+    if (gethostname(hostbuffer, sizeof(hostbuffer)) == -1) {
+        perror("Error getting local IP: gethostname");
         exit(1);
     }
-  
-    host_entry = gethostbyname(hostbuffer);
-    if(host_entry == NULL){
-        perror("["KRED"ERROR"RESET"]""Error getting local IP: gethostbyname");
+
+    printf("Host Name: %s\n", hostbuffer);
+
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_UNSPEC; // Permet IPv4 ou IPv6
+    hints.ai_socktype = SOCK_STREAM;
+
+    // Ajout d'une pause de 1 seconde avant de rappeler getaddrinfo
+    sleep(1);
+
+    if ((status = getaddrinfo(hostbuffer, NULL, &hints, &res)) != 0) {
+        fprintf(stderr, "Error getting local IP: %s\n", gai_strerror(status));
         exit(1);
     }
-  
-    // To convert an Internet network
-    // address into ASCII string
-    strcpy(IPbuffer,inet_ntoa(*((struct in_addr*) host_entry->h_addr_list[0])));
-  
-    printf("["KBLU"INFO"RESET"]""Attacker IP selected: %s\n", IPbuffer);
-  
-    return IPbuffer;
+
+    printf("List of IP Addresses:\n");
+    char IPbuffer[INET6_ADDRSTRLEN];
+    char* selectedIP = NULL;
+
+    for (p = res; p != NULL; p = p->ai_next) {
+        void *addr;
+        if (p->ai_family == AF_INET) {
+            struct sockaddr_in *ipv4 = (struct sockaddr_in *)p->ai_addr;
+            addr = &(ipv4->sin_addr);
+        } else {
+            struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)p->ai_addr;
+            addr = &(ipv6->sin6_addr);
+        }
+
+        // Convertir l'adresse en chaîne
+        if (inet_ntop(p->ai_family, addr, IPbuffer, sizeof IPbuffer) == NULL) {
+            perror("Error converting IP to string");
+            exit(1);
+        }
+
+        printf("  - %s\n", IPbuffer);
+
+        // Filtrer les adresses que vous ne voulez pas (127.0.0.1 et IPv6)
+        if (strcmp(IPbuffer, "127.0.0.1") != 0 && strchr(IPbuffer, ':') == NULL) {
+            printf("Selected IP: %s\n", IPbuffer);
+            selectedIP = strdup(IPbuffer);
+            break;
+        }
+    }
+
+    freeaddrinfo(res); // Libérer la mémoire allouée par getaddrinfo
+
+    if (selectedIP == NULL) {
+        fprintf(stderr, "["KBLU"INFO"RESET"]""Attacker IP not selected. Could not find a suitable IP address\n");
+        exit(1);
+    }
+
+    printf("["KBLU"INFO"RESET"]""Attacker IP selected: %s\n", selectedIP);
+
+    return selectedIP;
 }
+
+
+// char* getLocalIpAddress(){
+//     char hostbuffer[256];
+//     char* IPbuffer = calloc(256, sizeof(char));
+//     struct hostent *host_entry;
+//     struct addrinfo hints, *res, *p;
+//     int status;
+//     int hostname;
+  
+//   //new after gethostbyname
+//     hostname = gethostname(hostbuffer, sizeof(hostbuffer));
+//     if(hostname==-1){
+//         perror("["KRED"ERROR"RESET"]""Error getting local IP: gethostname");
+//         exit(1);
+//     }
+//     printf("Host Name: %s\n", hostbuffer);
+ 
+//     // host_entry = gethostbyname(hostbuffer);
+//     // if(host_entry == NULL){
+//     //     perror("["KRED"ERROR"RESET"]""Error getting local IP: gethostbyname");
+//     //     exit(1);
+//     // }
+
+//     struct addrinfo hints, *res;
+//     memset(&hints, 0, sizeof hints);
+//     hints.ai_family = AF_UNSPEC;
+//     hints.ai_socktype = SOCK_STREAM;
+
+//     // Obtenir les informations d'adresse
+//     if (getaddrinfo(hostbuffer, NULL, &hints, &res) != 0) {
+//         perror("Error getting local IP: getaddrinfo");
+//         exit(1);
+//     }
+
+//     char IPbuffer[INET6_ADDRSTRLEN];
+//     for (p = res; p != NULL; p = p->ai_next) {
+//         void *addr;
+//         if (p->ai_family == AF_INET) {
+//             struct sockaddr_in *ipv4 = (struct sockaddr_in *)p->ai_addr;
+//             addr = &(ipv4->sin_addr);
+//         } else {
+//             struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)p->ai_addr;
+//             addr = &(ipv6->sin6_addr);
+//         }
+
+//         // Convertir l'adresse en chaîne
+//         if (inet_ntop(p->ai_family, addr, IPbuffer, sizeof IPbuffer) == NULL) {
+//             perror("Error converting IP to string");
+//             exit(1);
+//         }
+
+//         printf("  - %s\n", IPbuffer);
+
+//         // Filtrer les adresses que vous ne voulez pas (127.0.0.1 et IPv6)
+//         if (strcmp(IPbuffer, "127.0.0.1") != 0 && strchr(IPbuffer, ':') == NULL) {
+//             printf("Selected IP: %s\n", IPbuffer);
+//             freeaddrinfo(res); // Libérer la mémoire allouée par getaddrinfo
+//             return strdup(IPbuffer);
+//         }
+//     }
+//     // To convert an Internet network
+//     // address into ASCII string
+//     //strcpy(IPbuffer,inet_ntoa(*((struct in_addr*) host_entry->h_addr_list[0])));
+  
+//     printf("["KBLU"INFO"RESET"]""Attacker IP selected: %s\n", IPbuffer);
+  
+//     return IPbuffer;
+// }
 
 void get_shell(char* argv){
     char* local_ip = getLocalIpAddress();
