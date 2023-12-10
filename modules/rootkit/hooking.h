@@ -1,9 +1,16 @@
+#include <linux/printk.h>
+
 void cr0_write(unsigned long val);
 unsigned long unprotect_memory(void);
 void protect_memory(unsigned long val);
 void get_kallsyms_funcptr(void);
 void get_syscall_table(void);
 
+#ifdef DEBUG_PRINTS
+    #define m_printd(fmt, ...) { printk(fmt, ##__VA_ARGS__) }
+#else
+    #define m_printd(fmt, ...)
+#endif //DEBUG_PRINTS
 
 // Pointer to syscall table
 extern unsigned long *syscall_table;

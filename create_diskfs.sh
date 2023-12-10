@@ -26,7 +26,14 @@ function cleanup() {
     kpartx -d $DISKFILE
     losetup -D
     
+    
+    ## Create QCOW2 from raw image because that is the format that we have to push
+    echo "[create_diskfs] Converting $DISKFILE to $QCOW2FILE"
+    qemu-img convert -f raw -O qcow2 $DISKFILE $QCOW2FILE
+    chown 1000:1000 $QCOW2FILE
+
     ## Removing image file since we have a QCOW2 file now
+    echo "[create_diskfs] Removing $DISKFILE"
     rm $DISKFILE
 
     exit
@@ -39,14 +46,14 @@ trap 'cleanup' SIGINT
 if [ -z $1 ]; then
     SIZE=1024M
 elif [ $1 = "-h" ] || [ $1 = "--help" ] || [ $1 = 'help' ]; then
-    echo "Usage: $0 <size (ex: 1024M, 2G)> <diskfile path W/OUT EXTENSION> <tempfolder path> <module path if it exists>"
+    echo "Usage: $0 <size (ex: 1024M, 2G)> <diskfile path W/OUT EXTENSION> <tempfolder path> <module path>"
     exit
 else
     SIZE=$1
 fi
 
 if [ -z $2 ]; then
-    DISKFILE=$(pwd)/disk.img
+    DISKFILE=$(pwd)/alpine2600.img
 else
     DISKFILE=$2.img
 fi
@@ -58,11 +65,15 @@ else
 fi
 
 
-if [ -n $4 ]; then
+if [ -z $4 ]; then
+    MODULE_PATH=./modules/rootkit/
+else
     MODULE_PATH=$4
 fi
 
-echo -e "[create_diskfs] CONFIG:\n\tVirtual disk size: $SIZE\n\tDiskfile output: $DISKFILE\n\tTemporary Folder: $TEMPFOLDER\n\tModule path: $MODULE_PATH"
+
+QCOW2FILE=$(echo $DISKFILE | sed s/.img/.qcow2/)
+echo -e "[create_diskfs] CONFIG:\n\tVirtual disk size: $SIZE\n\tQCOW2 output: $QCOW2FILE\n\tTemporary Folder: $TEMPFOLDER\n\tModule path: $MODULE_PATH"
 
 ## Checking if diskfile already exists, if so, the script deletes it
 if test -f "$DISKFILE"; then
@@ -70,7 +81,7 @@ if test -f "$DISKFILE"; then
     rm -f $DISKFILE 
 fi 
 
-DISKFILE_NAME=$(echo $DISKFILE | grep -Po '(?!:\/)[a-zA-Z0-9_]*\.img$')
+DISKFILE_NAME=$(basename $DISKFILE)
 
 ## Create a disk image that is bootable  
 echo "[create_diskfs] Creating $DISKFILE_NAME and partitioning it"
@@ -123,13 +134,7 @@ cp src/grub.cfg $TEMPFOLDER/boot/grub/grub.cfg
 ## Install grub on the tmpfs
 LOOPDEVICE=$(losetup -l | head -n 2 | tail -n 1 | cut -d' ' -f 1)
 echo "[create_diskfs] Installing GRUB on $LOOPDEVICE"
-sudo grub-install --directory=/usr/lib/grub/i386-pc --boot-directory=$TEMPFOLDER/boot $LOOPDEVICE
-
-## Create QCOW2 from raw image because that is the format that we have to push
-QCOW2FILE=$(echo $DISKFILE | sed s/.img/.qcow2/)
-echo "[create_diskfs] Converting $DISKFILE to $QCOW2FILE"
-qemu-img convert -f raw -O qcow2 $DISKFILE $QCOW2FILE
-chown 1000:1000 $QCOW2FILE
+sudo grub-install --target=i386-pc --boot-directory=$TEMPFOLDER/boot $LOOPDEVICE
 
 ## Cleanup
 cleanup

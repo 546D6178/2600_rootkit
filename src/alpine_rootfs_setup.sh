@@ -35,8 +35,8 @@ TEST_PATH=`realpath $TEST_PATH`
 for test in `find $TEST_PATH -mindepth 1 -maxdepth 1`; do
         echo "[alpine_rootfs_setup] Compiling test program $test"
         cd $test
-        make >/dev/null
-        cp "$test/`basename $test`" /home/salim
+        make >/dev/null 2>&1
+        cp "$test/`basename $test`" /home/$USERNAME
 done
 
 chown -R $USERNAME:$USERNAME /home/$USERNAME
@@ -45,11 +45,9 @@ chown -R $USERNAME:$USERNAME /home/$USERNAME
 echo -e "auto eth0\niface eth0 inet dhcp" | tee /etc/network/interfaces
 rc-update add networking boot
 
-
 ### add openssh 
 sed -i -e 's/#Port 22/Port 2222/' -e 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 rc-update add sshd boot
-
 
 ### Copy directories into the mounted tmpfs
 for d in bin etc lib root home sbin usr; do tar c "/$d" | tar x -C /my-rootfs; done
