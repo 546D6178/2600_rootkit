@@ -5,7 +5,7 @@ USERNAME="renji"
 PASSWORD="2600"
 
 # Install minimal utilities, a C compiler and libc
-apk add openrc neovim util-linux build-base nasm bash make shadow openssh
+apk add openrc neovim util-linux build-base nasm bash make shadow openssh strace
 
 # Setup serial terminal access for QEMU
 ln -s agetty /etc/init.d/agetty.ttyS0

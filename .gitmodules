@@ -1,0 +1,3 @@
+[submodule "modules/rootkit/tests/badguy/submodules/termcolor-c"]
+	path = modules/rootkit/tests/badguy/submodules/termcolor-c
+	url = https://github.com/ararslan/termcolor-c

