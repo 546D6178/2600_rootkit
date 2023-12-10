@@ -25,6 +25,9 @@ function cleanup() {
     echo "[create_diskfs] Detaching the $DISKFILE_NAME loop device"
     kpartx -d $DISKFILE
     losetup -D
+    
+    ## Removing image file since we have a QCOW2 file now
+    rm $DISKFILE
 
     exit
 }
@@ -36,7 +39,7 @@ trap 'cleanup' SIGINT
 if [ -z $1 ]; then
     SIZE=1024M
 elif [ $1 = "-h" ] || [ $1 = "--help" ] || [ $1 = 'help' ]; then
-    echo "Usage: $0 <size (ex: 1024M, 2G)> <diskfile path (ends in .img)> <tempfolder path> <module path if it exists>"
+    echo "Usage: $0 <size (ex: 1024M, 2G)> <diskfile path W/OUT EXTENSION> <tempfolder path> <module path if it exists>"
     exit
 else
     SIZE=$1
@@ -45,7 +48,7 @@ fi
 if [ -z $2 ]; then
     DISKFILE=$(pwd)/disk.img
 else
-    DISKFILE=$2
+    DISKFILE=$2.img
 fi
 
 if [ -z $3 ]; then
@@ -122,8 +125,11 @@ LOOPDEVICE=$(losetup -l | head -n 2 | tail -n 1 | cut -d' ' -f 1)
 echo "[create_diskfs] Installing GRUB on $LOOPDEVICE"
 sudo grub-install --directory=/usr/lib/grub/i386-pc --boot-directory=$TEMPFOLDER/boot $LOOPDEVICE
 
-## Chowning the image to the main user
-chown 1000:1000 $DISKFILE
+## Create QCOW2 from raw image because that is the format that we have to push
+QCOW2FILE=$(echo $DISKFILE | sed s/.img/.qcow2/)
+echo "[create_diskfs] Converting $DISKFILE to $QCOW2FILE"
+qemu-img convert -f raw -O qcow2 $DISKFILE $QCOW2FILE
+chown 1000:1000 $QCOW2FILE
 
 ## Cleanup
 cleanup

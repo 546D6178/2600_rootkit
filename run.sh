@@ -1,6 +1,6 @@
 #!/bin/sh
 
-IMAGE_PATH="$(pwd)/alpine2600.img"
+IMAGE_PATH="$(pwd)/alpine2600.qcow2"
 
 if [[ "$1" ]]; then
 	IMAGE_PATH=$1

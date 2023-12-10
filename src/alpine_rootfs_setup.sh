@@ -5,7 +5,7 @@ USERNAME="renji"
 PASSWORD="2600"
 
 # Install minimal utilities, a C compiler and libc
-apk add openrc neovim util-linux build-base nasm bash shadow openssh
+apk add openrc neovim util-linux build-base nasm bash make shadow openssh
 
 # Setup serial terminal access for QEMU
 ln -s agetty /etc/init.d/agetty.ttyS0
@@ -31,9 +31,12 @@ rc-update add sysfs boot
 
 ## Compiling all the tests and putting them in our user's folder
 TEST_PATH=$MODULE_PATH/tests
-for test in `find $TEST_PATH -type f`; do
-	gcc -o${test%.c} $test
-	cp ${test%.c} /home/$USERNAME
+TEST_PATH=`realpath $TEST_PATH`
+for test in `find $TEST_PATH -mindepth 1 -maxdepth 1`; do
+        echo "[alpine_rootfs_setup] Compiling test program $test"
+        cd $test
+        make >/dev/null
+        cp "$test/`basename $test`" /home/salim
 done
 
 chown -R $USERNAME:$USERNAME /home/$USERNAME
