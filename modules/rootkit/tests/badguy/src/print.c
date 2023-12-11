@@ -42,3 +42,15 @@ void print_greeting() {
 	fputs("companion app\n", text_blue(stdout));
 	reset_colors(stdout);
 }
+
+void print_bool(const char* str, int val) {
+	printf("%s ", str);
+	if (val != 0) {
+		fputs("Yes", text_green(stdout));
+	} else {
+		fputs("No", text_red(stdout));
+	}
+	
+	puts("");
+	reset_colors(stdout);
+}

