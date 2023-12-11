@@ -26,7 +26,15 @@ function cleanup() {
     kpartx -d $DISKFILE
     losetup -D
     
+    
+    ## Create QCOW2 from raw image because that is the format that we have to push
+    QCOW2FILE=$(echo $DISKFILE | sed s/.img/.qcow2/)
+    echo "[create_diskfs] Converting $diskfile to $qcow2file"
+    qemu-img convert -f raw -O qcow2 $DISKFILE $QCOW2FILE
+    chown 1000:1000 $QCOW2FILE
+
     ## Removing image file since we have a QCOW2 file now
+    echo "[create_diskfs] Removing $DISKFILE"
     rm $DISKFILE
 
     exit
@@ -46,7 +54,7 @@ else
 fi
 
 if [ -z $2 ]; then
-    DISKFILE=$(pwd)/disk.img
+    DISKFILE=$(pwd)/alpine2600.img
 else
     DISKFILE=$2.img
 fi
@@ -70,7 +78,7 @@ if test -f "$DISKFILE"; then
     rm -f $DISKFILE 
 fi 
 
-DISKFILE_NAME=$(echo $DISKFILE | grep -Po '(?!:\/)[a-zA-Z0-9_]*\.img$')
+DISKFILE_NAME=$(basename $DISKFILE)
 
 ## Create a disk image that is bootable  
 echo "[create_diskfs] Creating $DISKFILE_NAME and partitioning it"
@@ -123,13 +131,7 @@ cp src/grub.cfg $TEMPFOLDER/boot/grub/grub.cfg
 ## Install grub on the tmpfs
 LOOPDEVICE=$(losetup -l | head -n 2 | tail -n 1 | cut -d' ' -f 1)
 echo "[create_diskfs] Installing GRUB on $LOOPDEVICE"
-sudo grub-install --directory=/usr/lib/grub/i386-pc --boot-directory=$TEMPFOLDER/boot $LOOPDEVICE
-
-## Create QCOW2 from raw image because that is the format that we have to push
-QCOW2FILE=$(echo $DISKFILE | sed s/.img/.qcow2/)
-echo "[create_diskfs] Converting $DISKFILE to $QCOW2FILE"
-qemu-img convert -f raw -O qcow2 $DISKFILE $QCOW2FILE
-chown 1000:1000 $QCOW2FILE
+sudo grub-install --target=i386-pc --boot-directory=$TEMPFOLDER/boot $LOOPDEVICE
 
 ## Cleanup
 cleanup

