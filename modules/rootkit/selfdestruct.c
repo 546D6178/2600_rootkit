@@ -50,8 +50,6 @@ void flush_history(void){
 }
 
 
-
-
 //- Effacer log (dmesg, syslog, /log/messages)
 
 void flush_dmesg(void){

