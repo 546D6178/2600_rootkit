@@ -1,21 +1,6 @@
 #ifndef HEADER_NETFILTER_MANAGER
 #define HEADER_NETFILTER_MANAGER
 
-#include <linux/kernel.h>
-#include <linux/netfilter.h>
-#include <linux/netfilter_ipv4.h>
-#include <linux/ip.h>
-#include <linux/tcp.h>
-#include <linux/module.h>
-#include <linux/version.h>
-#include <linux/ip.h>
-#include <linux/tcp.h>
-#include <linux/kthread.h>
-#include <linux/delay.h>
-
-
-
-
 /**
  * @brief Netfilter hook for handling incoming packets.
  *
@@ -35,7 +20,6 @@ unsigned int net_hook(void *priv, struct sk_buff *skb, const struct nf_hook_stat
 
 int register_netfilter_hook(void);
 void unregister_netfilter_hook(void);
-
 
 
 

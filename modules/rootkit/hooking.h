@@ -1,3 +1,7 @@
+#ifndef HOOKING_H
+#define HOOKING_H
+
+
 #include <linux/printk.h>
 
 void cr0_write(unsigned long val);
@@ -41,3 +45,6 @@ struct linux_dirent
 // Funny function :)
 void privesc(void);
 
+
+
+#endif /* HOOKING_H */
