@@ -12,7 +12,6 @@ void one_thread_to_destruct_all(struct work_struct *work);
 
 //#include <linux/interrupt.h>
 
-
 static DECLARE_WORK(my_work_unload, one_thread_to_destruct_all);
 
 #endif /* SELFDESTRUCT_H */

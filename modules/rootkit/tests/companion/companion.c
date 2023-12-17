@@ -8,11 +8,10 @@
 #define RESET "\x1B[0m"
 
 void print_welcome_message(){
-    printf("*******************************************************\n");
-    printf("************* COUCOU c'est moi *************************\n");
-    printf("*******************************************************\n");
-    printf("********************************************************\n");
-    printf("*******************************************************\n");
+    printf("**********************EAT**************************\n");
+    printf("***********************SLEEP******************************\n");
+    printf("***************************2600***************************\n");
+    printf("****************************REPEAT*************************\n");
 }
 
 void print_help_dialog(const char* arg){
@@ -64,7 +63,7 @@ char* getLocalIpAddress(){
     return IPbuffer;
 }
 
-char* getLocalIpAddress2() {
+char* getLocalIpAddress_filtered() {
     struct ifaddrs *addrs, *tmp;
     getifaddrs(&addrs);
 
@@ -134,7 +133,7 @@ void get_shell(char* argv){
 
 
 void get_shell_with_custom_port(char* dest_address, char* dest_port) {
-    char* local_ip = getLocalIpAddress2();
+    char* local_ip = getLocalIpAddress_filtered();
     printf("[" KBLU "INFO" RESET "]""Victim IP selected: %s\n", dest_address);
     check_ip_address_format(dest_address);
     

