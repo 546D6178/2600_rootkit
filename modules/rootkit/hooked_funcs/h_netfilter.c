@@ -4,11 +4,9 @@
 #include <linux/ip.h>
 #include <linux/tcp.h>
 #include <linux/module.h>
-#include <linux/version.h>
-#include <linux/ip.h>
 #include <linux/tcp.h>
 #include <linux/kthread.h>
-#include <linux/delay.h>
+
 
 #include "h_netfilter.h"
 #include "../revshell.h"
