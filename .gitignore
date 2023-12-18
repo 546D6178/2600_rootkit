@@ -7,6 +7,7 @@ busybox
 badguy
 superkill
 companion
+vagrant
 *.o
 *.order
 *.mod.c

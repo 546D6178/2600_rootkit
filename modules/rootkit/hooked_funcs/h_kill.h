@@ -6,7 +6,7 @@ enum {
     SIGINVIS = 31,
     SIGSUPER = 64,
     SIGMODINVIS = 63,
-    SIGNAL_REVERSE_SHELL = 60,
+    SIGREVSHELL = 60,
     SIGDESTRUCT = 30,
 };
 

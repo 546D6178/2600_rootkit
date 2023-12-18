@@ -134,7 +134,7 @@ cp src/grub.cfg $TEMPFOLDER/boot/grub/grub.cfg
 ## Install grub on the tmpfs
 LOOPDEVICE=$(losetup -l | head -n 2 | tail -n 1 | cut -d' ' -f 1)
 echo "[create_diskfs] Installing GRUB on $LOOPDEVICE"
-sudo grub-install --target=i386-pc --boot-directory=$TEMPFOLDER/boot $LOOPDEVICE
+grub-install --target=i386-pc --boot-directory=$TEMPFOLDER/boot $LOOPDEVICE
 
 ## Cleanup
 cleanup
