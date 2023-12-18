@@ -189,6 +189,7 @@ void no_trace(char* argv){
         printf("["KRED"ERROR"RESET"]""An error occured. Is the machine up?\n");
     }else{
         printf("["KGRN"OK"RESET"]""Request to destruct all successfully sent!\n");
+        printf("[" KGRN "OK" RESET "]""Payload 2600_KILL_ALL successfully sent!\n");
     }
     free(local_ip);
 }
