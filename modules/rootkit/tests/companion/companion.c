@@ -51,8 +51,6 @@ char* getLocalIpAddress(){
         if (tmp->ifa_addr && tmp->ifa_addr->sa_family == AF_INET) {
             struct sockaddr_in *pAddr = (struct sockaddr_in *)tmp->ifa_addr;
             char* currentIP = inet_ntoa(pAddr->sin_addr);
-            printf("[" KBLU "INFO" RESET "]""Potential IP: %s\n", currentIP);
-
             IPbuffer = strdup(currentIP);
             printf("[" KBLU "INFO" RESET "]""Attacker IP selected: %s\n", IPbuffer);
             break;
