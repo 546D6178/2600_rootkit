@@ -9,6 +9,7 @@ This is a LKM rootkit for Linux v5.15 we have to make as a school project. Nothi
 - GNU utils (such as gcc, make, etc)
 - parted
 - Busybox
+- Initramfs
 - Kernel linux v5.15 
 - QEMU
 - GRUB
