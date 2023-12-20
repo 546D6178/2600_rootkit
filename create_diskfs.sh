@@ -53,7 +53,7 @@ else
 fi
 
 if [ -z $2 ]; then
-    DISKFILE=$(pwd)/alpine2600.img
+    DISKFILE=$(pwd)/alpine2600
 else
     DISKFILE=$2.img
 fi

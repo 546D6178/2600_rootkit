@@ -29,9 +29,10 @@ This is a rootkit we have to make as a school project. Nothing more
 ### "make_modules.sh"
 This one is straightforward, it compiles every module in the modules folder
 
-### "create_diskfs.sh"
+### "create_diskfs.sh"  
+`sudo ./create_diskfs.sh 1024M alpine2600.img /tmp/rootfs ./modules/malicious_file_rootkit/`  
 - 1st arg: size (ex: `1024M`)
-- 2nd arg: img path (ex: `./2600.img`)
+- 2nd arg: img path (ex: `./alpine2600`)
 - 3rd arg: tempfolder path (ex: `/tmp/rootfs`)
 - 4th arg: module path to copy in diskfs (ex: `./modules/rootkit`)
 
