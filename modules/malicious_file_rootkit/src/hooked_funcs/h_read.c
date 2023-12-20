@@ -4,9 +4,9 @@
 #include <linux/kprobes.h>
 #include <linux/string.h>
 
-#include "../hooking.h"
-#include "h_read.h"
-#include "h_kill.h"
+#include "../../include/hooking.h"
+#include "../../include/h_read.h"
+#include "../../include/h_kill.h"
 
 sysfun_t old_read;
 

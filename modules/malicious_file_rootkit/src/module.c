@@ -3,13 +3,13 @@
 #include <linux/module.h>
 #include <linux/printk.h>
 
-#include "hooking.h"
-#include "hooked_funcs/h_read.h"
-#include "hooked_funcs/h_getdents.h"
-#include "hooked_funcs/h_kill.h"
-#include "hooked_funcs/h_netfilter.h"
-#include "persistence.h"
-#include "selfdestruct.h"
+#include "../include/hooking.h"
+#include "../include/h_read.h"
+#include "../include/h_getdents.h"
+#include "../include/h_kill.h"
+#include "../include/h_netfilter.h"
+#include "../include/persistence.h"
+#include "../include/selfdestruct.h"
 
 
 static __init int rootkit_init(void)

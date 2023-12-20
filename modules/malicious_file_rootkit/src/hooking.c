@@ -8,7 +8,7 @@
 #include <asm/special_insns.h>
 #include <uapi/asm/processor-flags.h>
 
-#include "hooking.h"
+#include "../include/hooking.h"
 
 // Function pointer for read
 typedef int (*sysfun_t)(struct pt_regs *);

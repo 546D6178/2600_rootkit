@@ -8,10 +8,10 @@
 #include <linux/version.h>
 #include <linux/proc_ns.h>
 
-#include "h_kill.h"
-#include "../hooking.h"
-#include "../revshell.h"
-#include "../selfdestruct.h"
+#include "../../include/h_kill.h"
+#include "../../include/hooking.h"
+#include "../../include/revshell.h"
+#include "../../include/selfdestruct.h"
 
 #define PF_INVISIBLE 0x10000000
 

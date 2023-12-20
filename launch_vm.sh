@@ -1,3 +1,12 @@
 #!/bin/sh
 
-qemu-system-x86_64 -kernel linux/arch/x86/boot/bzImage -m 512 -initrd output/initramfs.cpio.gz -append "console=ttyS0" -nographic -s
+IMAGE_PATH="$(pwd)/alpine2600.qcow2"
+
+if [[ "$1" ]]; then
+	IMAGE_PATH=$1
+fi
+
+echo "Launching QEMU with image: $IMAGE_PATH"
+sleep 2
+
+qemu-system-x86_64 -nographic $IMAGE_PATH
