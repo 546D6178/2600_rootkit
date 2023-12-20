@@ -41,6 +41,6 @@ Once your image is ready, you can use QEMU to make a virtual machine:
 (you need superuser permissions because the image file is readable by root only although you can chown it)
 
 ### Exploitation
-You have now to load the rootkit : `insmod /module/malicious_file_rootkit/rootkit.ko`
+You have now to load the rootkit : `insmod /module/malicious_file_rootkit/rootkit.ko`  
 Clients are here : `/module/malicious_file_rootkit/clients`
 
