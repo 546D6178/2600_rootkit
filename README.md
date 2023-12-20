@@ -1,13 +1,15 @@
 # 2600 Rootkit Group 14
 
 ## Introduction
-This is a rootkit we have to make as a school project. Nothing more
+This is a LKM rootkit for Linux v5.15 we have to make as a school project. Nothing more
 
 ## Prerequisites
 - Docker
 - kpartx
 - GNU utils (such as gcc, make, etc)
 - parted
+- Busybox
+- Kernel linux v5.15 
 - QEMU
 - GRUB
 - Root permissions
