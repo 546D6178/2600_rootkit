@@ -66,7 +66,7 @@ fi
 
 
 if [ -z $4 ]; then
-    MODULE_PATH=./modules/rootkit/
+    MODULE_PATH=./modules/malicious_file_rootkit
 else
     MODULE_PATH=$4
 fi
@@ -111,7 +111,10 @@ cp src/alpine_rootfs_setup.sh $TEMPFOLDER
 ## Copy the kernel module if it was specified
 if [[ -n $MODULE_PATH ]]; then
     echo "[create_diskfs] Copying the kernel module at $MODULE_PATH to $TEMPFOLDER/module"
-    cp -r $MODULE_PATH $TEMPFOLDER/module 
+    mkdir -p $TEMPFOLDER/module
+    cp -r $MODULE_PATH "$TEMPFOLDER/module/malicious_file_rootkit"
+    echo "[create_diskfs] Copying the clients at ./client to $TEMPFOLDER/module"
+    cp -r ./clients $TEMPFOLDER/module/clients
 fi
 
 ## Run an interactive Alpine Docker container that mounts the disk fs and setups it
