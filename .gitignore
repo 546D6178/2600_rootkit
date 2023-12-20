@@ -4,9 +4,7 @@ rootfs
 *.pdf
 initramfs
 busybox
-badguy
 superkill
-companion
 vagrant
 *.o
 *.order
