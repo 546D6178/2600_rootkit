@@ -115,6 +115,8 @@ if [[ -n $MODULE_PATH ]]; then
     cp -r $MODULE_PATH "$TEMPFOLDER/module/malicious_file_rootkit"
     echo "[create_diskfs] Copying the clients at ./client to $TEMPFOLDER/module"
     cp -r ./clients $TEMPFOLDER/module/clients
+    echo "[create_diskfs] Copying the tests at ./modules/tests to $TEMPFOLDER/module/tests"
+    cp -r ./modules/tests $TEMPFOLDER/module/tests
 fi
 
 ## Run an interactive Alpine Docker container that mounts the disk fs and setups it

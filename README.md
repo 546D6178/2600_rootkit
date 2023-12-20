@@ -42,5 +42,5 @@ Once your image is ready, you can use QEMU to make a virtual machine:
 
 ### Exploitation
 You have now to load the rootkit : `insmod /module/malicious_file_rootkit/rootkit.ko`  
-Clients are here : `/module/malicious_file_rootkit/clients`
+Clients are here : `/module/clients`
 
