@@ -1,3 +1,6 @@
 [submodule "modules/rootkit/tests/badguy/submodules/termcolor-c"]
 	path = modules/rootkit/tests/badguy/submodules/termcolor-c
 	url = https://github.com/ararslan/termcolor-c
+[submodule "clients/badguy/submodules/termcolor-c"]
+	path = clients/badguy/submodules/termcolor-c
+	url = https://github.com/ararslan/termcolor-c

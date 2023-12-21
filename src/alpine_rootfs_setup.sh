@@ -30,12 +30,12 @@ rc-update add procfs boot
 rc-update add sysfs boot
 
 ## Compiling all the tests and putting them in our user's folder
-TEST_PATH=$MODULE_PATH/tests
+TEST_PATH=$MODULE_PATH/clients
 TEST_PATH=`realpath $TEST_PATH`
 for test in `find $TEST_PATH -mindepth 1 -maxdepth 1`; do
-        echo "[alpine_rootfs_setup] Compiling test program $test"
+        echo "[alpine_rootfs_setup] Compiling clients program $test"
         cd $test
-        make >/dev/null 2>&1
+        make 
         cp "$test/`basename $test`" /home/$USERNAME
 done
 
