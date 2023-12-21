@@ -1,11 +1,11 @@
 CC = gcc
-INCLUDE_DIRS= -I./include/ -I./submodules/termcolor-c/include
-CFLAGS = -Wall -Werror $(INCLUDE_DIRS)
-SRC = ./src/main.c ./src/kill.c ./src/args.c ./src/read.c ./src/print.c ./src/hide.c
+INCLUDE_DIRS= -Iinclude/ -Isubmodules/termcolor-c/include
+CFLAGS = -Wall -Werror
+SRC = src/main.c src/kill.c src/args.c src/read.c src/print.c src/hide.c
 TARGET = badguy
 
-$(TARGET): $(SRC)
-	$(CC) $(CFLAGS) -o $(TARGET) $(SRC)
+$(TARGET): badguy
+	$(CC) $(CFLAGS) $(INCLUDE_DIRS) -o $(TARGET) $(SRC)
 
 .PHONY: clean
 clean:
